@@ -1,15 +1,30 @@
 {
   "name": "nash-earnings-toolkit",
   "version": "0.1.0",
+  "scripts": {
+    "node": "npx hardhat node",
+    "start": "snowpack dev",
+    "build": "snowpack build"
+  },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@snowpack/plugin-postcss": "^1.4.3",
+    "@snowpack/plugin-svelte": "^3.7.0",
+    "@snowpack/plugin-typescript": "^1.2.1",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.7.10",
     "chai": "^4.3.4",
     "ethers": "^5.4.6",
     "hardhat": "^2.6.2",
+    "snowpack": "^3.8.8",
+    "svelte-preprocess": "^4.9.4",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.3.4",
+    "svelte": "^3.42.6",
+    "tailwindcss": "^2.2.15"
   }
 }
