@@ -54,8 +54,13 @@ export function web3(): Web3Store {
 
 	return {
 		subscribe,
-		connect: (): Promise<ethers.providers.Web3Provider> => {
-			return web3Modal.connect().then(createEthersProvider);
+		connect: async (): Promise<ethers.providers.Web3Provider> => {
+			let provider = await web3Modal.connect().then(createEthersProvider);
+			update(web3 => {
+				web3.provider = provider;
+				return web3;
+			});
+			return provider;
 		},
 		connectIfCachedProvider: (): Promise<ethers.providers.Web3Provider> => {
 			if (web3Modal.cachedProvider) {
