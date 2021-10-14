@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  p {
+    @apply mb-5 text-justify leading-relaxed;
+  }
+  
+  a {
+    @apply text-blue-600;
+
+    &:hover {
+      @apply underline;
+    }
+  }
+
+  button {
+    @apply bg-blue-600 text-white px-4 py-2 font-bold rounded;
+
+    &:hover {
+      @apply bg-blue-500;
+    }
+  }
+
+  table {
+
+    td {
+      @apply p-2 border border-gray-300;
+    }
+  }
+
+  input {
+    @apply border rounded border-blue-400;
+  }
+}

@@ -4,6 +4,7 @@
   import { EarningContract, Balances } from "./utils/contract";
 
   import Decimal from "./components/Decimal.svelte";
+  import AmountEdit from "./components/AmountEdit.svelte";
 
   const web3Provider = web3();
   let ethersProvider: ethers.providers.Web3Provider | null;
@@ -34,32 +35,37 @@
     <table>
       <tr>
         <td>USDC</td>
-        <td><Decimal value={balances.usdc} /></td>
-        <td />
+        <td class="text-right"><Decimal value={balances.usdc} /></td>
+        <td><AmountEdit value={balances.usdc} /></td>
       </tr>
       <tr>
         <td>DAI</td>
-        <td><Decimal value={balances.dai} /></td>
-        <td />
+        <td class="text-right"><Decimal value={balances.dai} /></td>
+        <td><AmountEdit value={balances.dai} /></td>
       </tr>
       <tr>
         <td>USDT</td>
-        <td><Decimal value={balances.usdt} /></td>
-        <td />
+        <td class="text-right"><Decimal value={balances.usdt} /></td>
+        <td><AmountEdit value={balances.usdt} /></td>
       </tr>
       <tr>
         <td>GUSD</td>
-        <td><Decimal value={balances.gusd} /></td>
-        <td />
+        <td  class="text-right"><Decimal value={balances.gusd} /></td>
+        <td><AmountEdit value={balances.gusd} /></td>
       </tr>
       <tr>
         <td>BUSD</td>
-        <td><Decimal value={balances.busd} /></td>
-        <td />
+        <td class="text-right"><Decimal value={balances.busd} /></td>
+        <td><AmountEdit value={balances.busd} /></td>
+      </tr>
+      <tr>
+        <td class="border-0"></td>
+        <td class="border-0"></td>
+        <td class="border-0 text-right"><button on:click={(e) => contract.withdraw(balances)}>Withdraw</button></td>
       </tr>
     </table>
     <div>
-      <button on:click={(e) => contract.withdraw(balances)}>Withdraw</button>
+      
     </div>
   {/await}
 {/await}

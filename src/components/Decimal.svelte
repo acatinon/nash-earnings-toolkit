@@ -10,4 +10,4 @@
   }
 </script>
 
-<span>{formatted}</span>
+<span class="tabular-nums">{formatted}</span>
