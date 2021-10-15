@@ -31,6 +31,6 @@
   }
 
   input {
-    @apply border rounded border-blue-400;
+    @apply border px-1 text-right rounded border-blue-400;
   }
 }

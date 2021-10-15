@@ -36,27 +36,27 @@
       <tr>
         <td>USDC</td>
         <td class="text-right"><Decimal value={balances.usdc} /></td>
-        <td><AmountEdit value={balances.usdc} /></td>
+        <td><AmountEdit maxValue={balances.usdc} /></td>
       </tr>
       <tr>
         <td>DAI</td>
         <td class="text-right"><Decimal value={balances.dai} /></td>
-        <td><AmountEdit value={balances.dai} /></td>
+        <td><AmountEdit maxValue={balances.dai} /></td>
       </tr>
       <tr>
         <td>USDT</td>
         <td class="text-right"><Decimal value={balances.usdt} /></td>
-        <td><AmountEdit value={balances.usdt} /></td>
+        <td><AmountEdit maxValue={balances.usdt} /></td>
       </tr>
       <tr>
         <td>GUSD</td>
         <td  class="text-right"><Decimal value={balances.gusd} /></td>
-        <td><AmountEdit value={balances.gusd} /></td>
+        <td><AmountEdit maxValue={balances.gusd} /></td>
       </tr>
       <tr>
         <td>BUSD</td>
         <td class="text-right"><Decimal value={balances.busd} /></td>
-        <td><AmountEdit value={balances.busd} /></td>
+        <td><AmountEdit maxValue={balances.busd} /></td>
       </tr>
       <tr>
         <td class="border-0"></td>
