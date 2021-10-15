@@ -4,6 +4,7 @@
   import { onMount } from 'svelte';
 
   export let maxValue: BigNumber;
+  export let decimalPlaces: number;
 
   let numericInput: HTMLInputElement;
   let numericValue = "0";
@@ -12,7 +13,7 @@
   onMount(() => {
     if (visible) {
       new AutoNumeric(numericInput, null, {
-        decimalPlaces: 6,
+        decimalPlaces: decimalPlaces,
         maximumValue: maxValue.toString(),
         selectOnFocus: false
       });

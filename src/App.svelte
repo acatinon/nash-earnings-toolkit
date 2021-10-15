@@ -1,7 +1,7 @@
 <script lang="typescript">
   import type { ethers } from "ethers";
   import { web3, Web3Provider } from "./utils/web3";
-  import { EarningContract, Balances } from "./utils/contract";
+  import { EarningContract, Balances, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "./utils/contract";
 
   import Decimal from "./components/Decimal.svelte";
   import AmountEdit from "./components/AmountEdit.svelte";
@@ -43,27 +43,27 @@
       <tr>
         <td class="asset"><img src="img/usdc.png" alt="USDC" /> USDC</td>
         <td class="text-right"><Decimal value={balances.usdc} /></td>
-        <td><AmountEdit maxValue={balances.usdc} /></td>
+        <td><AmountEdit maxValue={balances.usdc} decimalPlaces={USDC_DECIMALS} /></td>
       </tr>
       <tr>
         <td class="asset"><img src="img/dai.png" alt="USDC" /> DAI</td>
         <td class="text-right"><Decimal value={balances.dai} /></td>
-        <td><AmountEdit maxValue={balances.dai} /></td>
+        <td><AmountEdit maxValue={balances.dai} decimalPlaces={DAI_DECIMALS} /></td>
       </tr>
       <tr>
         <td class="asset"><img src="img/usdt.png" alt="USDC" /> USDT</td>
         <td class="text-right"><Decimal value={balances.usdt} /></td>
-        <td><AmountEdit maxValue={balances.usdt} /></td>
+        <td><AmountEdit maxValue={balances.usdt} decimalPlaces={USDT_DECIMALS} /></td>
       </tr>
       <tr>
         <td class="asset"><img src="img/gusd.png" alt="USDC" /> GUSD</td>
         <td class="text-right"><Decimal value={balances.gusd} /></td>
-        <td><AmountEdit maxValue={balances.gusd} /></td>
+        <td><AmountEdit maxValue={balances.gusd} decimalPlaces={GUSD_DECIMALS} /></td>
       </tr>
       <tr>
         <td class="asset"><img src="img/busd.png" alt="USDC" /> BUSD</td>
         <td class="text-right"><Decimal value={balances.busd} /></td>
-        <td><AmountEdit maxValue={balances.busd} /></td>
+        <td><AmountEdit maxValue={balances.busd} decimalPlaces={BUSD_DECIMALS} /></td>
       </tr>
       <tr>
         <td class="border-0"></td>

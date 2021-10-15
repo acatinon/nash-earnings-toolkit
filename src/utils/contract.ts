@@ -3,11 +3,11 @@ import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
 import abi from "./abi.json";
 
-const USDC_DECIMALS = 6;
-const DAI_DECIMALS = 18;
-const USDT_DECIMALS = 6;
-const GUSD_DECIMALS = 6;
-const BUSD_DECIMALS = 18;
+export const USDC_DECIMALS = 6;
+export const DAI_DECIMALS = 18;
+export const USDT_DECIMALS = 6;
+export const GUSD_DECIMALS = 6;
+export const BUSD_DECIMALS = 18;
 
 export class EarningContract {
   protected ethersContract: ethers.Contract;
