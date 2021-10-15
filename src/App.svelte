@@ -37,7 +37,7 @@
         <tr>
           <th>Assets</th>
           <th>Holdings</th>
-          <th>Withdraw</th>
+          <th>Amounts to withdraw</th>
         </tr>
       </thead>
       <tr>
@@ -66,9 +66,11 @@
         <td><AmountEdit maxValue={balances.busd} decimalPlaces={BUSD_DECIMALS} /></td>
       </tr>
       <tr>
-        <td class="border-0"></td>
-        <td class="border-0"></td>
-        <td class="border-0 text-right"><button on:click={(e) => contract.withdraw(balances)}>Withdraw</button></td>
+        <td class="border-0 text-right" colspan="3">
+          {#await contract.manualWithdrawalFee() then fee}
+            <span class="text-gray-600">Manual withdrawal fee: {fee}%</span>
+          {/await}
+          <button on:click={(e) => contract.withdraw(balances)}>Withdraw</button></td>
       </tr>
     </table>
     <div>
