@@ -25,7 +25,7 @@
 
   table {
 
-    td {
+    td, th {
       @apply p-2 border border-gray-300;
     }
   }

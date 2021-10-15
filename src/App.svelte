@@ -33,6 +33,13 @@
   <p>Connected with {account}</p>
   {#await contract.balanceOf(account) then balances}
     <table>
+      <thead>
+        <tr>
+          <th>Assets</th>
+          <th>Holdings</th>
+          <th>Withdraw</th>
+        </tr>
+      </thead>
       <tr>
         <td>USDC</td>
         <td class="text-right"><Decimal value={balances.usdc} /></td>
