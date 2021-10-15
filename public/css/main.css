@@ -34,3 +34,13 @@
     @apply border px-1 text-right rounded border-blue-400;
   }
 }
+
+@layer components {
+
+  td.asset {
+    img {
+      @apply align-middle inline w-6 h-6;
+    }
+  }
+
+}
