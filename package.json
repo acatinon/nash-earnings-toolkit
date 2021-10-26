@@ -26,6 +26,7 @@
     "autonumeric": "^4.6.0",
     "autoprefixer": "^10.3.4",
     "bignumber.js": "^9.0.1",
+    "dotenv": "^10.0.0",
     "svelte": "^3.42.6",
     "tailwindcss": "^2.2.15",
     "web3modal": "^1.9.4"
