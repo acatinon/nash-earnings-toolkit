@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
-
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 export interface Web3ModalHook {
 	active: boolean;
@@ -18,7 +18,14 @@ export function useWeb3Modal(): Web3ModalHook {
 	const [library, setLibrary] = useState<ethers.providers.Web3Provider>(null);
 
   const providerOptions = {
-		/* See Provider Options Section */
+    walletconnect: {
+      package: WalletConnectProvider,
+      options: {
+        rpc: {
+          1: process.env.ETH_MAINNET_RPC
+        }
+      }
+    }
 	};
 
   useEffect(() => {
