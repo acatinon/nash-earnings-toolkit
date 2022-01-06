@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { InjectedConnector } from '@web3-react/injected-connector'
+import { InjectedConnector } from '@web3-react/injected-connector';
 import abi from "./abi.json";
 
 export const USDC_DECIMALS = 6;
@@ -29,7 +29,7 @@ export interface ContractInterface {
 
 type Activate = (connector: AbstractConnector, onError?: (error: Error) => void, throwErrors?: boolean) => Promise<void>;
 
-export function useContract(active: boolean, account: string, library: ethers.providers.Web3Provider, activate: Activate): ContractInterface {
+export function useContract(active: boolean, account: string, library: ethers.providers.Web3Provider, activate: any): ContractInterface {
   const [contractState, setContractState] = useState(ContractState.NotConnected);
   const [contract, setContract] = useState<EarningContract>(null);
   const [balances, setBalances] = useState<Balances>(null);
@@ -38,9 +38,7 @@ export function useContract(active: boolean, account: string, library: ethers.pr
 
   useEffect(() => {
     async function fetch() {
-      console.log("Fetching init");
       if (active) {
-        console.log("Fetching...")
         let signer = library.getSigner(account);
         let contract = new EarningContract(signer);
         let balances = await contract.balanceOf(account);

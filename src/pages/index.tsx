@@ -1,6 +1,5 @@
 import React from "react"
-import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core"
+import { useWeb3Modal } from "../utils/web3modal";
 import { ContractState, useContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "../utils/contract";
 import Decimal from "../components/decimal";
 import AmountEdit from "../components/amount-edit";
@@ -8,7 +7,7 @@ import AmountEdit from "../components/amount-edit";
 
 export default (props) => {
 
-  const { active, account, library, connector, activate, deactivate } = useWeb3React<ethers.providers.Web3Provider>();
+  const { active, account, library, activate, deactivate } = useWeb3Modal();
   const { contractState, contract, balances, fee, error, connect } = useContract(active, account, library, activate);
 
   async function disconnect() {
