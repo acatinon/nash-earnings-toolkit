@@ -1,6 +1,8 @@
-
+import { useState, useEffect } from "react"
 import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { InjectedConnector } from '@web3-react/injected-connector'
 import abi from "./abi.json";
 
 export const USDC_DECIMALS = 6;
@@ -8,6 +10,75 @@ export const DAI_DECIMALS = 18;
 export const USDT_DECIMALS = 6;
 export const GUSD_DECIMALS = 6;
 export const BUSD_DECIMALS = 18;
+
+export enum ContractState {
+  NotConnected,
+  Connecting,
+  Connected,
+  Error
+}
+
+export interface ContractInterface {
+  contractState: ContractState;
+  contract: EarningContract;
+  balances: Balances;
+  fee: BigNumber;
+  error: Error;
+  connect: () => Promise<void>;
+}
+
+type Activate = (connector: AbstractConnector, onError?: (error: Error) => void, throwErrors?: boolean) => Promise<void>;
+
+export function useContract(active: boolean, account: string, library: ethers.providers.Web3Provider, activate: Activate): ContractInterface {
+  const [contractState, setContractState] = useState(ContractState.NotConnected);
+  const [contract, setContract] = useState<EarningContract>(null);
+  const [balances, setBalances] = useState<Balances>(null);
+  const [fee, setFee] = useState<BigNumber>(null);
+  const [error, setError] = useState<Error>(null);
+
+  useEffect(() => {
+    async function fetch() {
+      console.log("Fetching init");
+      if (active) {
+        console.log("Fetching...")
+        let signer = library.getSigner(account);
+        let contract = new EarningContract(signer);
+        let balances = await contract.balanceOf(account);
+        let fee = await contract.manualWithdrawalFee();
+        setContract(contract);
+        setBalances(balances);
+        setFee(fee);
+        setContractState(ContractState.Connected);
+      }
+      else {
+        setContractState(ContractState.NotConnected);
+      }
+    }
+
+    fetch();
+  }, [active]);
+
+  const connect = async () => {
+    setContractState(ContractState.Connecting);
+    activate(
+      new InjectedConnector({}),
+      (error: Error) => {
+        setError(error);
+        setContractState(ContractState.Error);
+      },
+      false // don't throw on errors
+    );
+  };
+
+  return {
+    contractState,
+    contract,
+    balances,
+    fee,
+    error,
+    connect
+  };
+}
 
 export class EarningContract {
   protected ethersContract: ethers.Contract;
