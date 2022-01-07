@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react"
 import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
-import { AbstractConnector } from '@web3-react/abstract-connector';
-import { InjectedConnector } from '@web3-react/injected-connector';
+import { Activate } from './web3modal';
 import abi from "./abi.json";
 
 export const USDC_DECIMALS = 6;
@@ -14,8 +13,7 @@ export const BUSD_DECIMALS = 18;
 export enum ContractState {
   NotConnected,
   Connecting,
-  Connected,
-  Error
+  Connected
 }
 
 export interface ContractInterface {
@@ -27,9 +25,7 @@ export interface ContractInterface {
   connect: () => Promise<void>;
 }
 
-type Activate = (connector: AbstractConnector, onError?: (error: Error) => void, throwErrors?: boolean) => Promise<void>;
-
-export function useContract(active: boolean, account: string, library: ethers.providers.Web3Provider, activate: any): ContractInterface {
+export function useContract(active: boolean, account: string, library: ethers.providers.Web3Provider, activate: Activate): ContractInterface {
   const [contractState, setContractState] = useState(ContractState.NotConnected);
   const [contract, setContract] = useState<EarningContract>(null);
   const [balances, setBalances] = useState<Balances>(null);
@@ -59,12 +55,10 @@ export function useContract(active: boolean, account: string, library: ethers.pr
   const connect = async () => {
     setContractState(ContractState.Connecting);
     activate(
-      new InjectedConnector({}),
       (error: Error) => {
         setError(error);
-        setContractState(ContractState.Error);
-      },
-      false // don't throw on errors
+        setContractState(ContractState.NotConnected);
+      }
     );
   };
 

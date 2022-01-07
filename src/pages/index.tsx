@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { useWeb3Modal } from "../utils/web3modal";
 import { ContractState, useContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "../utils/contract";
 import Decimal from "../components/decimal";
@@ -58,8 +58,9 @@ export default (props) => {
                 <td><AmountEdit maxValue={balances.busd} decimalPlaces={BUSD_DECIMALS} /></td>
               </tr>
               <tr>
-                <td className="border-0 text-right" colSpan={3}>
+                <td className="p-0 py-2 border-0 text-right" colSpan={3}>
                   <span className="text-gray-600">Manual withdrawal fee: <Decimal value={fee} decimalPlaces={2} />%</span>
+                  &nbsp;
                   <button onClick={(e) => contract.withdraw(balances)}>Withdraw</button></td>
               </tr>
             </tbody>
@@ -73,10 +74,6 @@ export default (props) => {
     case ContractState.NotConnected:
       return (
         <button className="m-auto block" onClick={connect} >Connect your wallet</button>
-      )
-    case ContractState.Error:
-      return (
-        <p>Error: {error}</p>
       )
   }
 }

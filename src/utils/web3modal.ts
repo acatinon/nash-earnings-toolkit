@@ -3,11 +3,13 @@ import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
+export type Activate = (onError?: (error: Error) => void) => Promise<void>;
+
 export interface Web3ModalHook {
 	active: boolean;
 	account: string;
 	library: ethers.providers.Web3Provider;
-	activate: () => void;
+	activate: Activate;
 	deactivate: () => void;
 };
 
@@ -42,12 +44,20 @@ export function useWeb3Modal(): Web3ModalHook {
 		return new ethers.providers.Web3Provider(provider);
 	}
 
-  const activate = async (): Promise<void> => {
-    let library = await web3Modal.connect().then(createEthersProvider);
-    let accounts = await library.listAccounts();
-    setLibrary(library);
-    setAccount(accounts[0]);
-    setActive(true);
+  const activate = async (onError?: (error: Error) => void): Promise<void> => {
+    web3Modal.connect()
+      .then(createEthersProvider)
+      .then(async (library) => {
+        let accounts = await library.listAccounts();
+        setLibrary(library);
+        setAccount(accounts[0]);
+        setActive(true);
+      })
+      .catch(e => {
+        if (onError) {
+          onError(e);
+        }
+      });
   }
   
   const deactivate = () => {
