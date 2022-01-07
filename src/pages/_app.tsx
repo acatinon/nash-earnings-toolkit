@@ -1,16 +1,18 @@
-import { Web3ReactProvider } from '@web3-react/core'
-import { ethers } from "ethers";
+import { useState } from "react";
 
-import '../styles/main.css'
+import AccountContext from "../contexts/account-context";
+import Layout from "../components/layout";
 
-function getLibrary(provider, connector) {
-  return new ethers.providers.Web3Provider(provider);
-}
+import '../styles/main.css';
 
 export default ({ Component, pageProps }) => {
+  const [account, setAccount] = useState<string>(null);
+
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Component {...pageProps} />
-    </Web3ReactProvider>
+    <AccountContext.Provider value={{account, setAccount}}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </AccountContext.Provider>
   );
 }

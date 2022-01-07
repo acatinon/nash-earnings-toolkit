@@ -1,14 +1,19 @@
-import React, { useMemo } from "react"
+import React, { useEffect, useContext } from "react"
 import { useWeb3Modal } from "../utils/web3modal";
 import { ContractState, useContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "../utils/contract";
 import Decimal from "../components/decimal";
 import AmountEdit from "../components/amount-edit";
-
+import AccountContext from "../contexts/account-context";
 
 export default (props) => {
 
   const { active, account, library, activate, deactivate } = useWeb3Modal();
   const { contractState, contract, balances, fee, error, connect } = useContract(active, account, library, activate);
+  const { setAccount } = useContext(AccountContext);
+
+  useEffect(() => {
+    setAccount(account);
+  }, [account]);
 
   async function disconnect() {
     try {
