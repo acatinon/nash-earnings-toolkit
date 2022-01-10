@@ -23,11 +23,24 @@ export default (props) => {
     }
   }
 
-  switch (contractState) {
+  return  (
+    <>
+      <div>
+        <h2>Earnings withdrawal tool</h2>
+        <p>Hello !</p>
+      </div>
+      <Content contract={contract} contractState={contractState} balances={balances} fee={fee} connect={connect} />
+    </>
+  );
+
+
+}
+
+const Content = (props) => {
+  switch (props.contractState) {
     case ContractState.Connected:
       return (
-        <>
-          <p>Connected with {account}</p>
+        <div>
           <table>
             <thead>
               <tr>
@@ -39,38 +52,38 @@ export default (props) => {
             <tbody>
               <tr>
                 <td className="asset"><img src="img/usdc.png" alt="USDC" /> USDC</td>
-                <td className="text-right"><Decimal value={balances.usdc} /></td>
-                <td><AmountEdit maxValue={balances.usdc} decimalPlaces={USDC_DECIMALS} /></td>
+                <td className="text-right"><Decimal value={props.balances.usdc} /></td>
+                <td><AmountEdit maxValue={props.balances.usdc} decimalPlaces={USDC_DECIMALS} /></td>
               </tr>
               <tr>
                 <td className="asset"><img src="img/dai.png" alt="USDC" /> DAI</td>
-                <td className="text-right"><Decimal value={balances.dai} /></td>
-                <td><AmountEdit maxValue={balances.dai} decimalPlaces={DAI_DECIMALS} /></td>
+                <td className="text-right"><Decimal value={props.balances.dai} /></td>
+                <td><AmountEdit maxValue={props.balances.dai} decimalPlaces={DAI_DECIMALS} /></td>
               </tr>
               <tr>
                 <td className="asset"><img src="img/usdt.png" alt="USDC" /> USDT</td>
-                <td className="text-right"><Decimal value={balances.usdt} /></td>
-                <td><AmountEdit maxValue={balances.usdt} decimalPlaces={USDT_DECIMALS} /></td>
+                <td className="text-right"><Decimal value={props.balances.usdt} /></td>
+                <td><AmountEdit maxValue={props.balances.usdt} decimalPlaces={USDT_DECIMALS} /></td>
               </tr>
               <tr>
                 <td className="asset"><img src="img/gusd.png" alt="USDC" /> GUSD</td>
-                <td className="text-right"><Decimal value={balances.gusd} /></td>
-                <td><AmountEdit maxValue={balances.gusd} decimalPlaces={GUSD_DECIMALS} /></td>
+                <td className="text-right"><Decimal value={props.balances.gusd} /></td>
+                <td><AmountEdit maxValue={props.balances.gusd} decimalPlaces={GUSD_DECIMALS} /></td>
               </tr>
               <tr>
                 <td className="asset"><img src="img/busd.png" alt="USDC" /> BUSD</td>
-                <td className="text-right"><Decimal value={balances.busd} /></td>
-                <td><AmountEdit maxValue={balances.busd} decimalPlaces={BUSD_DECIMALS} /></td>
+                <td className="text-right"><Decimal value={props.balances.busd} /></td>
+                <td><AmountEdit maxValue={props.balances.busd} decimalPlaces={BUSD_DECIMALS} /></td>
               </tr>
               <tr>
                 <td className="p-0 py-2 border-0 text-right" colSpan={3}>
-                  <span className="text-gray-600">Manual withdrawal fee: <Decimal value={fee} decimalPlaces={2} />%</span>
+                  <span className="text-gray-600">Manual withdrawal fee: <Decimal value={props.fee} decimalPlaces={2} />%</span>
                   &nbsp;
-                  <button onClick={(e) => contract.withdraw(balances)}>Withdraw</button></td>
+                  <button onClick={(e) => props.contract.withdraw(props.balances)}>Withdraw</button></td>
               </tr>
             </tbody>
           </table>
-        </>
+        </div>
       )
     case ContractState.Connecting:
       return (
@@ -78,7 +91,9 @@ export default (props) => {
       )
     case ContractState.NotConnected:
       return (
-        <button className="m-auto block" onClick={connect} >Connect your wallet</button>
+        <div className="flex grow">
+          <button className="m-auto block" onClick={props.connect} >Connect your wallet</button>
+        </div>
       )
   }
 }

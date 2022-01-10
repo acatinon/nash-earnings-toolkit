@@ -3,6 +3,23 @@
 @tailwind utilities;
 
 @layer base {
+  html,
+  body {
+    @apply h-full;
+  }
+
+  #__next {
+    @apply flex flex-col h-full;
+  }
+
+  h1 {
+    @apply text-2xl font-bold;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
   p {
     @apply mb-5 text-justify leading-relaxed;
   }
