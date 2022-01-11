@@ -1,32 +1,14 @@
-import React, { useEffect, useContext } from "react"
-import { useWeb3Modal, ProviderState } from "../utils/web3modal";
+import React, { useContext } from "react"
+import { ProviderState } from "../utils/web3modal";
 import { useContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "../utils/contract";
 import Decimal from "../components/decimal";
 import AmountEdit from "../components/amount-edit";
-import AccountContext from "../contexts/web3-context";
+import Web3Context from "../contexts/web3-context";
 
 export default (props) => {
-
-  const { providerState, account, library, activate, deactivate } = useWeb3Modal(onError);
+  const { providerState, account, library, activate } = useContext(Web3Context);
   const { isActive, contract, balances, fee, connect } = useContract(providerState, account, library, activate);
-  const { setAccount } = useContext(AccountContext);
-
-  useEffect(() => {
-    setAccount(account);
-  }, [account]);
-
-  async function onError(error: Error) {
-    console.log(error);
-  }
-
-  async function disconnect() {
-    try {
-      deactivate()
-    } catch (ex) {
-      console.log(ex)
-    }
-  }
-
+  
   return  (
     <>
       <div>
@@ -36,8 +18,6 @@ export default (props) => {
       <Content isActive={isActive} contract={contract} providerState={providerState} balances={balances} fee={fee} connect={connect} />
     </>
   );
-
-
 }
 
 const Content = (props) => {

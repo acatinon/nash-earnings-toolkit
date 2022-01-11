@@ -1,3 +1,9 @@
 import React from "react"
 
-export default React.createContext({ account: null as string, setAccount: (newValue: string) => {} });
+export default React.createContext({
+    providerState: null,
+    account: null as string,
+    library: null,
+    activate: () => {},
+    deactivate: () => {}
+});

@@ -1,10 +1,10 @@
 import { useContext, useMemo } from "react";
 
-import AccountContext from "../contexts/web3-context";
+import Web3Context from "../contexts/web3-context";
 
 export default ({ children }) => {
 
-    const { account } = useContext(AccountContext);
+    const { account } = useContext(Web3Context);
     const formattedAccount = useMemo(() => account && account.replace(/^(.{6}).*(.{4})$/g, '$1...$2'), [account]);
     const accountArea = account ? (<span className="rounded bg-blue-400 text-white font-semibold px-1 self-center">{formattedAccount}</span>) : null;
 
