@@ -27,7 +27,7 @@ const Content = (props) => {
     case ProviderState.NotConnected:
       return (
         <div className="flex grow">
-          <button className="m-auto block" onClick={props.connect} >Connect your wallet</button>
+          <button className="primary m-auto block" onClick={props.connect} >Connect your wallet</button>
         </div>
       )
     case ProviderState.Connecting:
@@ -78,7 +78,7 @@ const Content = (props) => {
                 <td className="p-0 py-2 border-0 text-right" colSpan={3}>
                   <span className="text-gray-600">Manual withdrawal fee: <Decimal value={props.fee} decimalPlaces={2} />%</span>
                   &nbsp;
-                  <button onClick={(e) => props.contract.withdraw(props.balances)}>Withdraw</button></td>
+                  <button className="primary" onClick={(e) => props.contract.withdraw(props.balances)}>Withdraw</button></td>
               </tr>
             </tbody>
           </table>

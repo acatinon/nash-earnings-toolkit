@@ -32,14 +32,6 @@
     }
   }
 
-  button {
-    @apply bg-blue-600 text-white px-4 py-2 font-bold rounded;
-
-    &:hover {
-      @apply bg-blue-500;
-    }
-  }
-
   table {
 
     td, th {
@@ -53,6 +45,14 @@
 }
 
 @layer components {
+
+  button.primary {
+    @apply bg-blue-600 text-white px-4 py-2 font-bold rounded;
+
+    &:hover {
+      @apply bg-blue-500;
+    }
+  }
 
   td.asset {
     img {

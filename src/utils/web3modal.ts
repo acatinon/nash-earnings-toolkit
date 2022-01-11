@@ -75,6 +75,7 @@ export function useWeb3Modal(onError: (error: Error) => void): Web3ModalHook {
   
   const deactivate = () => {
     web3Modal.clearCachedProvider();
+    setAccount(null);
     setLibrary(null);
     setProviderState(ProviderState.NotConnected);
   }
