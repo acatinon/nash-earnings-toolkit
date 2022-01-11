@@ -3,19 +3,24 @@ import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
-export type Activate = (onError?: (error: Error) => void) => Promise<void>;
-
 export interface Web3ModalHook {
-	active: boolean;
+	providerState: ProviderState;
 	account: string;
 	library: ethers.providers.Web3Provider;
-	activate: Activate;
+	activate: () => void;
 	deactivate: () => void;
 };
 
-export function useWeb3Modal(): Web3ModalHook {
+export enum ProviderState {
+  Init,
+  NotConnected,
+  Connecting,
+  Connected
+}
+
+export function useWeb3Modal(onError: (error: Error) => void): Web3ModalHook {
   const [web3Modal, setWeb3Modal] = useState(null);
-	const [isActive, setActive] = useState(false);
+	const [providerState, setProviderState] = useState(ProviderState.Init);
 	const [account, setAccount] = useState(null);
 	const [library, setLibrary] = useState<ethers.providers.Web3Provider>(null);
 
@@ -31,43 +36,51 @@ export function useWeb3Modal(): Web3ModalHook {
 	};
 
   useEffect(() => {
-    const w3M = new Web3Modal({
-      network: "mainnet",
-      cacheProvider: true, // optional
-      providerOptions
-    });
+    const init = async () => {
+      const w3M = new Web3Modal({
+        network: "mainnet",
+        cacheProvider: true, // optional
+        providerOptions
+      });
   
-    setWeb3Modal(w3M);
+      if (w3M.cachedProvider) {
+        await w3M.connect()
+          .then(onConnect)
+          .catch(onError);
+      }
+      else {
+        setProviderState(ProviderState.NotConnected);
+      }
+    
+      setWeb3Modal(w3M);
+    }
+
+    init();
   }, []);
 
-	const createEthersProvider = (provider: any): ethers.providers.Web3Provider => {
-		return new ethers.providers.Web3Provider(provider);
-	}
+  const onConnect = async (provider: any) => {
+    setProviderState(ProviderState.Connecting);
+    const library = new ethers.providers.Web3Provider(provider);
+    let accounts = await library.listAccounts();
+    setLibrary(library);
+    setAccount(accounts[0]);
+    setProviderState(ProviderState.Connected);
+  };
 
-  const activate = async (onError?: (error: Error) => void): Promise<void> => {
+  const activate = async (): Promise<void> => {
     web3Modal.connect()
-      .then(createEthersProvider)
-      .then(async (library) => {
-        let accounts = await library.listAccounts();
-        setLibrary(library);
-        setAccount(accounts[0]);
-        setActive(true);
-      })
-      .catch(e => {
-        if (onError) {
-          onError(e);
-        }
-      });
+      .then(onConnect)
+      .catch(onError);
   }
   
   const deactivate = () => {
     web3Modal.clearCachedProvider();
     setLibrary(null);
-    setActive(false);
+    setProviderState(ProviderState.NotConnected);
   }
 
   return {
-	  active: isActive,
+	  providerState,
 	  account,
 	  library,
 	  activate,

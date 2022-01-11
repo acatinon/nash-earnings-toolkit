@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
-import { Activate } from './web3modal';
+import { ProviderState } from './web3modal';
 import abi from "./abi.json";
 
 export const USDC_DECIMALS = 6;
@@ -10,31 +10,24 @@ export const USDT_DECIMALS = 6;
 export const GUSD_DECIMALS = 6;
 export const BUSD_DECIMALS = 18;
 
-export enum ContractState {
-  NotConnected,
-  Connecting,
-  Connected
-}
 
 export interface ContractInterface {
-  contractState: ContractState;
+  isActive: boolean;
   contract: EarningContract;
   balances: Balances;
   fee: BigNumber;
-  error: Error;
   connect: () => Promise<void>;
 }
 
-export function useContract(active: boolean, account: string, library: ethers.providers.Web3Provider, activate: Activate): ContractInterface {
-  const [contractState, setContractState] = useState(ContractState.NotConnected);
+export function useContract(state: ProviderState, account: string, library: ethers.providers.Web3Provider, activate: () => void): ContractInterface {
+  const [isActive, setActive] = useState(false);
   const [contract, setContract] = useState<EarningContract>(null);
   const [balances, setBalances] = useState<Balances>(null);
   const [fee, setFee] = useState<BigNumber>(null);
-  const [error, setError] = useState<Error>(null);
 
   useEffect(() => {
     async function fetch() {
-      if (active) {
+      if (state == ProviderState.Connected) {
         let signer = library.getSigner(account);
         let contract = new EarningContract(signer);
         let balances = await contract.balanceOf(account);
@@ -42,32 +35,25 @@ export function useContract(active: boolean, account: string, library: ethers.pr
         setContract(contract);
         setBalances(balances);
         setFee(fee);
-        setContractState(ContractState.Connected);
+        setActive(true)
       }
       else {
-        setContractState(ContractState.NotConnected);
+        setActive(false);
       }
     }
 
     fetch();
-  }, [active]);
+  }, [state]);
 
   const connect = async () => {
-    setContractState(ContractState.Connecting);
-    activate(
-      (error: Error) => {
-        setError(error);
-        setContractState(ContractState.NotConnected);
-      }
-    );
+    activate();
   };
 
   return {
-    contractState,
+    isActive,
     contract,
     balances,
     fee,
-    error,
     connect
   };
 }

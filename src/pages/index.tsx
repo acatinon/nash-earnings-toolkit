@@ -1,19 +1,23 @@
 import React, { useEffect, useContext } from "react"
-import { useWeb3Modal } from "../utils/web3modal";
-import { ContractState, useContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "../utils/contract";
+import { useWeb3Modal, ProviderState } from "../utils/web3modal";
+import { useContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "../utils/contract";
 import Decimal from "../components/decimal";
 import AmountEdit from "../components/amount-edit";
 import AccountContext from "../contexts/account-context";
 
 export default (props) => {
 
-  const { active, account, library, activate, deactivate } = useWeb3Modal();
-  const { contractState, contract, balances, fee, error, connect } = useContract(active, account, library, activate);
+  const { providerState, account, library, activate, deactivate } = useWeb3Modal(onError);
+  const { isActive, contract, balances, fee, connect } = useContract(providerState, account, library, activate);
   const { setAccount } = useContext(AccountContext);
 
   useEffect(() => {
     setAccount(account);
   }, [account]);
+
+  async function onError(error: Error) {
+    console.log(error);
+  }
 
   async function disconnect() {
     try {
@@ -29,7 +33,7 @@ export default (props) => {
         <h2>Earnings withdrawal tool</h2>
         <p>Hello !</p>
       </div>
-      <Content contract={contract} contractState={contractState} balances={balances} fee={fee} connect={connect} />
+      <Content isActive={isActive} contract={contract} providerState={providerState} balances={balances} fee={fee} connect={connect} />
     </>
   );
 
@@ -37,8 +41,23 @@ export default (props) => {
 }
 
 const Content = (props) => {
-  switch (props.contractState) {
-    case ContractState.Connected:
+  switch (props.providerState) {
+    case ProviderState.Init:
+      return null;
+    case ProviderState.NotConnected:
+      return (
+        <div className="flex grow">
+          <button className="m-auto block" onClick={props.connect} >Connect your wallet</button>
+        </div>
+      )
+    case ProviderState.Connecting:
+      return (
+        <p>Connecting...</p>
+      )
+    case ProviderState.Connected:
+      if (!props.isActive) {
+        return null;
+      }
       return (
         <div>
           <table>
@@ -84,16 +103,6 @@ const Content = (props) => {
             </tbody>
           </table>
         </div>
-      )
-    case ContractState.Connecting:
-      return (
-        <p>Connecting...</p>
-      )
-    case ContractState.NotConnected:
-      return (
-        <div className="flex grow">
-          <button className="m-auto block" onClick={props.connect} >Connect your wallet</button>
-        </div>
-      )
+      )    
   }
 }
