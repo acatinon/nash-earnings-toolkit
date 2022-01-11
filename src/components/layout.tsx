@@ -1,6 +1,6 @@
 import { useContext, useMemo } from "react";
 
-import AccountContext from "../contexts/account-context";
+import AccountContext from "../contexts/web3-context";
 
 export default ({ children }) => {
 

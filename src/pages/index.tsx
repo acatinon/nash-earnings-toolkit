@@ -3,7 +3,7 @@ import { useWeb3Modal, ProviderState } from "../utils/web3modal";
 import { useContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "../utils/contract";
 import Decimal from "../components/decimal";
 import AmountEdit from "../components/amount-edit";
-import AccountContext from "../contexts/account-context";
+import AccountContext from "../contexts/web3-context";
 
 export default (props) => {
 

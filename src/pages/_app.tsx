@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import AccountContext from "../contexts/account-context";
+import AccountContext from "../contexts/web3-context";
 import Layout from "../components/layout";
 
 import '../styles/main.css';
