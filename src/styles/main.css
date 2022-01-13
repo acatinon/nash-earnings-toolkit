@@ -17,11 +17,15 @@
   }
 
   h2 {
-    @apply text-xl;
+    @apply text-xl font-bold mb-4;
+  }
+
+  h3 {
+    @apply font-semibold;
   }
 
   p {
-    @apply mb-5 text-justify leading-relaxed;
+    @apply mb-4 text-justify leading-relaxed;
   }
   
   a {

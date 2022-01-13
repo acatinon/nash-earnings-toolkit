@@ -7,6 +7,7 @@ export interface Web3ModalHook {
 	providerState: ProviderState;
 	account: string;
 	library: ethers.providers.Web3Provider;
+  error: Error;
 	activate: () => void;
 	deactivate: () => void;
 };
@@ -18,11 +19,12 @@ export enum ProviderState {
   Connected
 }
 
-export function useWeb3Modal(onError: (error: Error) => void): Web3ModalHook {
+export function useWeb3Modal(): Web3ModalHook {
   const [web3Modal, setWeb3Modal] = useState(null);
 	const [providerState, setProviderState] = useState(ProviderState.Init);
 	const [account, setAccount] = useState(null);
 	const [library, setLibrary] = useState<ethers.providers.Web3Provider>(null);
+  const [error, setError] = useState(null);
 
   const providerOptions = {
     walletconnect: {
@@ -58,6 +60,11 @@ export function useWeb3Modal(onError: (error: Error) => void): Web3ModalHook {
     init();
   }, []);
 
+  const onError = (error: Error) => {
+    setError(error);
+    setProviderState(ProviderState.NotConnected);
+  };
+
   const onConnect = async (provider: any) => {
     setProviderState(ProviderState.Connecting);
     const library = new ethers.providers.Web3Provider(provider);
@@ -84,6 +91,7 @@ export function useWeb3Modal(onError: (error: Error) => void): Web3ModalHook {
 	  providerState,
 	  account,
 	  library,
+    error,
 	  activate,
 	  deactivate
   }

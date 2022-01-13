@@ -1,23 +1,62 @@
 import React, { useContext } from "react"
 import { ProviderState } from "../utils/web3modal";
+import { IoAlertCircleOutline, IoWarningOutline, IoHelpCircleOutline } from 'react-icons/io5';
 import { useContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "../utils/contract";
 import Decimal from "../components/decimal";
 import AmountEdit from "../components/amount-edit";
 import Web3Context from "../contexts/web3-context";
 
 export default (props) => {
-  const { providerState, account, library, activate } = useContext(Web3Context);
+  const { providerState, account, library, error, activate } = useContext(Web3Context);
   const { isActive, contract, balances, fee, connect } = useContract(providerState, account, library, activate);
   
   return  (
     <>
       <div>
-        <h2>Earnings withdrawal tool</h2>
-        <p>Hello !</p>
+        <h2>Earning withdrawal tool</h2>
+        <WarningMessage>
+          This tool is not official and is not endorsed by the Nash team. Use at your own risk!
+        </WarningMessage>
+        <p>As you may know, on the mobile app, the Nash earning product only allow to cash out to fiat.
+        But earning is non-custodial, which means that it's possible to withdraw your stablecoin tokens
+        at any time by interacting directly with the blockchain.</p>
+        <p>This tool allows you to call a method on the earning smart contract that will withdraw your
+          aTokens from Aave and transfer the correponding stablecoins to your wallet.</p>
       </div>
-      <Content isActive={isActive} contract={contract} providerState={providerState} balances={balances} fee={fee} connect={connect} />
+      <Content
+        isActive={isActive}
+        error={error}
+        contract={contract}
+        providerState={providerState}
+        balances={balances}
+        fee={fee}
+        connect={connect} />
     </>
   );
+}
+
+const WarningMessage = (props) => {
+  if (props.children) {
+    return (
+      <p className="bg-amber-50 border-l-2 border-amber-500 p-2">
+        <h3 className="flex items-center text-amber-500"><IoWarningOutline className="text-xl" />&nbsp;Warning</h3>
+        <div>{props.children}</div>
+      </p>
+    )
+  }
+  return null;
+}
+
+const ErrorMessage = (props) => {
+  if (props.children) {
+    return (
+      <p className="bg-red-50 border-l-2 border-red-500 p-2">
+        <h3 className="flex items-center text-red-500"><IoAlertCircleOutline className="text-xl" />&nbsp;Error</h3>
+        <div>{props.children}</div>
+      </p>
+    )
+  }
+  return null;
 }
 
 const Content = (props) => {
@@ -26,7 +65,8 @@ const Content = (props) => {
       return null;
     case ProviderState.NotConnected:
       return (
-        <div className="flex grow">
+        <div className="flex flex-col grow">
+          <ErrorMessage>{props.error}</ErrorMessage>
           <button className="primary m-auto block" onClick={props.connect} >Connect your wallet</button>
         </div>
       )
@@ -39,7 +79,7 @@ const Content = (props) => {
         return null;
       }
       return (
-        <div>
+        <div className="grid grid-cols-2 gap-4">
           <table>
             <thead>
               <tr>
