@@ -83,11 +83,17 @@ const Content = (props: ContentProps) => {
 
   const onWithdraw = async (e) => {
     setTransactionState(TransactionState.Pending);
-    let response = await props.contract.withdraw(props.balances);
-    response.wait()
-      .then((receipt) => {
-        setTransactionHash(receipt.transactionHash);
-        setTransactionState(TransactionState.Success);
+    props.contract.withdraw(props.balances)
+      .then((response) => {
+        response.wait()
+        .then((receipt) => {
+          setTransactionHash(receipt.transactionHash);
+          setTransactionState(TransactionState.Success);
+        })
+        .catch((error) => {
+          props.setError(error);
+          setTransactionState(TransactionState.Error);
+        });
       })
       .catch((error) => {
         props.setError(error);

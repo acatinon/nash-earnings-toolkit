@@ -39,7 +39,7 @@ const ErrorModal = ({ error, setError }) => {
             <IoAlertCircleOutline className="m-4 text-red-500 text-4xl" />
             <div className="p-4 pl-0 flex-grow">
               <h3 className="text-xl text-red-500">Error</h3>
-              <div>{error}</div>
+              <div>{error.message || error.toString()}</div>
             </div>
           </div>
           <div className="flex justify-end bg-gray-100 rounded-b-lg p-2">
