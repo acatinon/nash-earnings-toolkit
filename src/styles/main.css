@@ -46,12 +46,20 @@
   input {
     @apply border px-1 text-right rounded border-blue-400;
   }
+
+  button {
+    @apply bg-white border border-gray-300 px-4 py-1 font-bold rounded;
+
+    &:hover {
+      @apply border-gray-400;
+    }
+  }
 }
 
 @layer components {
 
   button.primary {
-    @apply bg-blue-600 text-white px-4 py-2 font-bold rounded;
+    @apply bg-blue-600 text-white border-0;
 
     &:hover {
       @apply bg-blue-500;

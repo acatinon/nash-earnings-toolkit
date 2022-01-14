@@ -7,10 +7,11 @@ import Layout from "../components/layout";
 import '../styles/main.css';
 
 export default ({ Component, pageProps }) => {
-  const { providerState, account, library, error, activate, deactivate } = useWeb3Modal();
+  const [error, setError] = useState<Error>(null);
+  const { providerState, account, library, activate, deactivate } = useWeb3Modal(setError);
 
   return (
-    <Web3Context.Provider value={{providerState, account, library, error, activate, deactivate}}>
+    <Web3Context.Provider value={{providerState, account, library, error, setError, activate, deactivate}}>
       <Layout>
         <Component {...pageProps} />
       </Layout>

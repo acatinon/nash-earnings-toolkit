@@ -108,9 +108,8 @@ export class EarningContract {
     return new BigNumber(scale.toString());
   }
 
-  public async withdraw(balances: Balances): Promise<void> {
-    console.log("withdraw");
-    await this.ethersContract.withdraw(this.balancesToArray(balances));
+  public async withdraw(balances: Balances): Promise<ethers.providers.TransactionResponse> {
+    return await this.ethersContract.withdraw(this.balancesToArray(balances));
   }
 
   balancesToArray(balances: Balances): string[] {

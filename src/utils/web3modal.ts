@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch } from 'react';
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -7,7 +7,6 @@ export interface Web3ModalHook {
 	providerState: ProviderState;
 	account: string;
 	library: ethers.providers.Web3Provider;
-  error: Error;
 	activate: () => void;
 	deactivate: () => void;
 };
@@ -19,12 +18,11 @@ export enum ProviderState {
   Connected
 }
 
-export function useWeb3Modal(): Web3ModalHook {
+export function useWeb3Modal(setError: Dispatch<Error>): Web3ModalHook {
   const [web3Modal, setWeb3Modal] = useState(null);
 	const [providerState, setProviderState] = useState(ProviderState.Init);
 	const [account, setAccount] = useState(null);
 	const [library, setLibrary] = useState<ethers.providers.Web3Provider>(null);
-  const [error, setError] = useState(null);
 
   const providerOptions = {
     walletconnect: {
@@ -91,7 +89,6 @@ export function useWeb3Modal(): Web3ModalHook {
 	  providerState,
 	  account,
 	  library,
-    error,
 	  activate,
 	  deactivate
   }

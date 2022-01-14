@@ -1,13 +1,14 @@
-import React, { useContext } from "react"
+import React, { Dispatch, useContext, useState } from "react"
+import BigNumber from "bignumber.js";
 import { ProviderState } from "../utils/web3modal";
-import { IoAlertCircleOutline, IoWarningOutline, IoHelpCircleOutline } from 'react-icons/io5';
-import { useContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS } from "../utils/contract";
+import { IoWarningOutline, IoHelpCircleOutline } from 'react-icons/io5';
+import { useContract, EarningContract, USDC_DECIMALS, DAI_DECIMALS, USDT_DECIMALS, GUSD_DECIMALS, BUSD_DECIMALS, Balances } from "../utils/contract";
 import Decimal from "../components/decimal";
 import AmountEdit from "../components/amount-edit";
 import Web3Context from "../contexts/web3-context";
 
 export default (props) => {
-  const { providerState, account, library, error, activate } = useContext(Web3Context);
+  const { providerState, account, library, setError, activate } = useContext(Web3Context);
   const { isActive, contract, balances, fee, connect } = useContract(providerState, account, library, activate);
   
   return  (
@@ -25,14 +26,26 @@ export default (props) => {
       </div>
       <Content
         isActive={isActive}
-        error={error}
         contract={contract}
         providerState={providerState}
         balances={balances}
         fee={fee}
+        setError={setError}
         connect={connect} />
     </>
   );
+}
+
+const InfoMessage = (props) => {
+  if (props.children) {
+    return (
+      <p className="bg-sky-50 border-l-2 border-sky-500 p-2">
+        <h3 className="flex items-center text-sky-500"><IoHelpCircleOutline className="text-xl" />&nbsp;Help</h3>
+        <div>{props.children}</div>
+      </p>
+    )
+  }
+  return null;
 }
 
 const WarningMessage = (props) => {
@@ -47,26 +60,47 @@ const WarningMessage = (props) => {
   return null;
 }
 
-const ErrorMessage = (props) => {
-  if (props.children) {
-    return (
-      <p className="bg-red-50 border-l-2 border-red-500 p-2">
-        <h3 className="flex items-center text-red-500"><IoAlertCircleOutline className="text-xl" />&nbsp;Error</h3>
-        <div>{props.children}</div>
-      </p>
-    )
-  }
-  return null;
+enum TransactionState {
+  NotStarted,
+  Pending,
+  Success,
+  Error
 }
 
-const Content = (props) => {
+interface ContentProps {
+  isActive: boolean;
+  contract: EarningContract;
+  providerState: ProviderState;
+  balances: Balances;
+  fee: BigNumber;
+  setError: Dispatch<Error>;
+  connect: () => void;
+}
+
+const Content = (props: ContentProps) => {
+  const [transactionState, setTransactionState] = useState(TransactionState.NotStarted);
+  const [transactionHash, setTransactionHash] = useState(null);
+
+  const onWithdraw = async (e) => {
+    setTransactionState(TransactionState.Pending);
+    let response = await props.contract.withdraw(props.balances);
+    response.wait()
+      .then((receipt) => {
+        setTransactionHash(receipt.transactionHash);
+        setTransactionState(TransactionState.Success);
+      })
+      .catch((error) => {
+        props.setError(error);
+        setTransactionState(TransactionState.Error);
+      });
+  }
+
   switch (props.providerState) {
     case ProviderState.Init:
       return null;
     case ProviderState.NotConnected:
       return (
         <div className="flex flex-col grow">
-          <ErrorMessage>{props.error}</ErrorMessage>
           <button className="primary m-auto block" onClick={props.connect} >Connect your wallet</button>
         </div>
       )
@@ -118,10 +152,15 @@ const Content = (props) => {
                 <td className="p-0 py-2 border-0 text-right" colSpan={3}>
                   <span className="text-gray-600">Manual withdrawal fee: <Decimal value={props.fee} decimalPlaces={2} />%</span>
                   &nbsp;
-                  <button className="primary" onClick={(e) => props.contract.withdraw(props.balances)}>Withdraw</button></td>
+                  <button className="primary" onClick={onWithdraw}>Withdraw</button></td>
               </tr>
             </tbody>
           </table>
+          <div>
+            <InfoMessage>
+              Hello!
+            </InfoMessage>
+          </div>
         </div>
       )    
   }
