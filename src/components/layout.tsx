@@ -43,7 +43,7 @@ const ErrorModal = ({ error, setError }) => {
             </div>
           </div>
           <div className="flex justify-end bg-gray-100 rounded-b-lg p-2">
-            <button onClick={resetError}>Ok</button>
+            <button className="secondary" onClick={resetError}>Ok</button>
           </div>
         </div>
       </div>
