@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 import { expect } from "chai";
 
-import abi from "../src/utils/abi.json";
+import abi from "../../src/utils/abi.json";
 
 
 describe("Balance of", function () {
