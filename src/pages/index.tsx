@@ -39,10 +39,10 @@ export default (props) => {
 const InfoMessage = (props) => {
   if (props.children) {
     return (
-      <p className="bg-sky-50 border-l-2 border-sky-500 p-2">
+      <div className="bg-sky-50 border-l-2 border-sky-500 p-2">
         <h3 className="flex items-center text-sky-500"><IoHelpCircleOutline className="text-xl" />&nbsp;Help</h3>
         <div>{props.children}</div>
-      </p>
+      </div>
     )
   }
   return null;
@@ -51,10 +51,10 @@ const InfoMessage = (props) => {
 const WarningMessage = (props) => {
   if (props.children) {
     return (
-      <p className="bg-amber-50 border-l-2 border-amber-500 p-2">
+      <div className="bg-amber-50 border-l-2 border-amber-500 p-2">
         <h3 className="flex items-center text-amber-500"><IoWarningOutline className="text-xl" />&nbsp;Warning</h3>
         <div>{props.children}</div>
-      </p>
+      </div>
     )
   }
   return null;
