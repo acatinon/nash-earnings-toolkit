@@ -33,13 +33,13 @@ const ErrorModal = ({ error, setError }) => {
 
   if (error) {
     return (
-      <div className="flex fixed inset-0 bg-gray-700 bg-opacity-50 overflow-y-auto h-full w-full" onClick={resetError}>
+      <div className="flex fixed inset-0 bg-neutral-800 bg-opacity-50 overflow-y-auto h-full w-full" onClick={resetError}>
         <div className="flex flex-col m-auto bg-white rounded-lg min-w-[25rem] shadow-md">
           <div className="flex">
             <IoAlertCircleOutline className="m-4 text-red-500 text-4xl" />
             <div className="p-4 pl-0 flex-grow">
               <h3 className="text-xl text-red-500">Error</h3>
-              <div>{error.message || error.toString()}</div>
+              <div>{error.reason || error.message || error.toString()}</div>
             </div>
           </div>
           <div className="flex justify-end bg-gray-100 rounded-b-lg p-2">

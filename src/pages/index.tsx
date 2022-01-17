@@ -91,11 +91,13 @@ const Content = (props: ContentProps) => {
           setTransactionState(TransactionState.Success);
         })
         .catch((error) => {
+          debugger;
           props.setError(error);
           setTransactionState(TransactionState.Error);
         });
       })
       .catch((error) => {
+        debugger;
         props.setError(error);
         setTransactionState(TransactionState.Error);
       });
