@@ -64,12 +64,23 @@ export function useWeb3Modal(setError: Dispatch<Error>): Web3ModalHook {
   };
 
   const onConnect = async (provider: any) => {
-    setProviderState(ProviderState.Connecting);
-    const library = new ethers.providers.Web3Provider(provider);
-    let accounts = await library.listAccounts();
-    setLibrary(library);
-    setAccount(accounts[0]);
-    setProviderState(ProviderState.Connected);
+    const chainId = parseInt(provider.chainId, 16);
+
+    switch (chainId) {
+      case 1:
+      case 1337: // Hardhat
+        setProviderState(ProviderState.Connecting);
+        const library = new ethers.providers.Web3Provider(provider);
+        let accounts = await library.listAccounts();
+        setLibrary(library);
+        setAccount(accounts[0]);
+        setProviderState(ProviderState.Connected);
+        break;
+      default:
+        setError(new Error("Please switch to the Ethereum mainnet"));
+        setProviderState(ProviderState.NotConnected);
+    }
+
   };
 
   const activate = async (): Promise<void> => {
