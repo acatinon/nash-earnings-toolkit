@@ -13,25 +13,61 @@ export default (props) => {
   
   return  (
     <>
-      <div>
-        <h2>Earning withdrawal tool</h2>
-        <WarningMessage>
-          This tool is not official and is not endorsed by the Nash team. Use at your own risk!
-        </WarningMessage>
-        <p>As you may know, on the mobile app, the Nash earning product only allow to cash out to fiat.
-        But earning is non-custodial, which means that it's possible to withdraw your stablecoin tokens
-        at any time by interacting directly with the blockchain.</p>
-        <p>This tool allows you to call a method on the earning smart contract that will withdraw your
-          aTokens from Aave and transfer the correponding stablecoins to your wallet.</p>
+      <h2>Earning withdrawal tool</h2>
+      <div className="grid grid-cols-2 gap-6">
+        <div>
+          <WarningMessage>
+            This tool is not official and is not endorsed by the Nash team. Use at your own risk!
+          </WarningMessage>
+          <p>As you may know, on the mobile app, the Nash earning product only allow to cash out to fiat.
+          But earning is non-custodial, which means that it's possible to withdraw your stablecoin tokens
+          at any time by interacting directly with the blockchain.</p>
+          <p>This tool allows you to call a method on the earning smart contract that will withdraw your
+            aTokens from Aave and transfer the correponding stablecoins to your wallet.</p>
+          <Content
+            isActive={isActive}
+            contract={contract}
+            providerState={providerState}
+            balances={balances}
+            fee={fee}
+            setError={setError}
+            connect={connect} />
+        </div>
+
+        <div>
+          <InfoMessage title="FAQ">
+            <dl>
+              <dt>Will I get my aTokens, or the underlying?</dt>
+              <dd>The Nash earning manual withdrawal smart contract method has been designed to
+                withdraw the aTokens from Aave, so you will get the respective underlying tokens
+                corresponding to the aTokens you have.</dd>
+
+              <dt>Do I need ETH in my wallet to withdraw my aTokens?</dt>
+              <dd>Yes, a smart contract method will be called to trigger the withdrawal, and,
+                as every interaction with the Ethereum blockchain, you need to pay fees.
+                Also, keep in mind that your aTokens will be withdrawn from Aave, and that
+                kind of operations a quite costly.
+              </dd>
+
+              <dt>What is the manual withdrawal fee?</dt>
+              <dd>Nash charges a small fee when manually withdrawing to a personal wallet.
+                At the time of writing that fee is 1%, but Nash has the ability to change it
+                int the future. If you connect with your wallet, you will be able to see
+                the actual fee amount.
+              </dd>
+
+              <dt>Can I analyse this tool source code?</dt>
+              <dd>Yes, of course! The source code od this tool is avaliable
+                on <a href="https://github.com/acatinon/nash-earnings-toolkit">Github</a>.</dd>
+
+              <dt>Can I download a copy of this tool and store an offline version?</dt>
+              <dd>Yes, of course!</dd>
+            </dl>
+          </InfoMessage>          
+        </div>
+
       </div>
-      <Content
-        isActive={isActive}
-        contract={contract}
-        providerState={providerState}
-        balances={balances}
-        fee={fee}
-        setError={setError}
-        connect={connect} />
+      
     </>
   );
 }
@@ -40,7 +76,7 @@ const InfoMessage = (props) => {
   if (props.children) {
     return (
       <div className="bg-sky-50 border-l-2 border-sky-500 p-2">
-        <h3 className="flex items-center text-sky-500"><IoHelpCircleOutline className="text-xl" />&nbsp;Help</h3>
+        <h3 className="flex items-center text-sky-500"><IoHelpCircleOutline className="mt-0.5 text-xl" />{props.title}</h3>
         <div>{props.children}</div>
       </div>
     )
@@ -51,8 +87,8 @@ const InfoMessage = (props) => {
 const WarningMessage = (props) => {
   if (props.children) {
     return (
-      <div className="bg-amber-50 border-l-2 border-amber-500 p-2">
-        <h3 className="flex items-center text-amber-500"><IoWarningOutline className="text-xl" />&nbsp;Warning</h3>
+      <div className="bg-amber-50 border-l-2 border-amber-500 p-2 mb-4">
+        <h3 className="flex items-center text-amber-500"><IoWarningOutline className="mt-0.5 text-xl" />Warning</h3>
         <div>{props.children}</div>
       </div>
     )
@@ -108,9 +144,7 @@ const Content = (props: ContentProps) => {
       return null;
     case ProviderState.NotConnected:
       return (
-        <div className="flex flex-col grow">
-          <button className="primary m-auto block" onClick={props.connect} >Connect your wallet</button>
-        </div>
+        <button className="my-10 primary m-auto block" onClick={props.connect} >Connect your wallet</button>
       )
     case ProviderState.Connecting:
       return (
@@ -121,55 +155,48 @@ const Content = (props: ContentProps) => {
         return null;
       }
       return (
-        <div className="grid grid-cols-2 gap-4">
-          <table>
-            <thead>
-              <tr>
-                <th>Assets</th>
-                <th>Holdings</th>
-                <th>Amounts to withdraw</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="asset"><img src="img/usdc.png" alt="USDC" /> USDC</td>
-                <td className="text-right"><Decimal value={props.balances.usdc} /></td>
-                <td><AmountEdit maxValue={props.balances.usdc} decimalPlaces={USDC_DECIMALS} /></td>
-              </tr>
-              <tr>
-                <td className="asset"><img src="img/dai.png" alt="USDC" /> DAI</td>
-                <td className="text-right"><Decimal value={props.balances.dai} /></td>
-                <td><AmountEdit maxValue={props.balances.dai} decimalPlaces={DAI_DECIMALS} /></td>
-              </tr>
-              <tr>
-                <td className="asset"><img src="img/usdt.png" alt="USDC" /> USDT</td>
-                <td className="text-right"><Decimal value={props.balances.usdt} /></td>
-                <td><AmountEdit maxValue={props.balances.usdt} decimalPlaces={USDT_DECIMALS} /></td>
-              </tr>
-              <tr>
-                <td className="asset"><img src="img/gusd.png" alt="USDC" /> GUSD</td>
-                <td className="text-right"><Decimal value={props.balances.gusd} /></td>
-                <td><AmountEdit maxValue={props.balances.gusd} decimalPlaces={GUSD_DECIMALS} /></td>
-              </tr>
-              <tr>
-                <td className="asset"><img src="img/busd.png" alt="USDC" /> BUSD</td>
-                <td className="text-right"><Decimal value={props.balances.busd} /></td>
-                <td><AmountEdit maxValue={props.balances.busd} decimalPlaces={BUSD_DECIMALS} /></td>
-              </tr>
-              <tr>
-                <td className="p-0 py-2 border-0 text-right" colSpan={3}>
-                  <span className="text-gray-600">Manual withdrawal fee: <Decimal value={props.fee} decimalPlaces={2} />%</span>
-                  &nbsp;
-                  <button className="primary" onClick={onWithdraw}>Withdraw</button></td>
-              </tr>
-            </tbody>
-          </table>
-          <div>
-            <InfoMessage>
-              Hello!
-            </InfoMessage>
-          </div>
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Assets</th>
+              <th>Holdings</th>
+              <th>Amounts to withdraw</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="asset"><img src="img/usdc.png" alt="USDC" /> aUSDC</td>
+              <td className="text-right"><Decimal value={props.balances.usdc} /></td>
+              <td><AmountEdit maxValue={props.balances.usdc} decimalPlaces={USDC_DECIMALS} /></td>
+            </tr>
+            <tr>
+              <td className="asset"><img src="img/dai.png" alt="USDC" /> aDAI</td>
+              <td className="text-right"><Decimal value={props.balances.dai} /></td>
+              <td><AmountEdit maxValue={props.balances.dai} decimalPlaces={DAI_DECIMALS} /></td>
+            </tr>
+            <tr>
+              <td className="asset"><img src="img/usdt.png" alt="USDC" /> aUSDT</td>
+              <td className="text-right"><Decimal value={props.balances.usdt} /></td>
+              <td><AmountEdit maxValue={props.balances.usdt} decimalPlaces={USDT_DECIMALS} /></td>
+            </tr>
+            <tr>
+              <td className="asset"><img src="img/gusd.png" alt="USDC" /> aGUSD</td>
+              <td className="text-right"><Decimal value={props.balances.gusd} /></td>
+              <td><AmountEdit maxValue={props.balances.gusd} decimalPlaces={GUSD_DECIMALS} /></td>
+            </tr>
+            <tr>
+              <td className="asset"><img src="img/busd.png" alt="USDC" /> aBUSD</td>
+              <td className="text-right"><Decimal value={props.balances.busd} /></td>
+              <td><AmountEdit maxValue={props.balances.busd} decimalPlaces={BUSD_DECIMALS} /></td>
+            </tr>
+            <tr>
+              <td className="p-0 py-2 border-0 text-right" colSpan={3}>
+                <span className="text-gray-600">Manual withdrawal fee: <Decimal value={props.fee} decimalPlaces={2} />%</span>
+                &nbsp;
+                <button className="primary" onClick={onWithdraw}>Withdraw</button></td>
+            </tr>
+          </tbody>
+        </table>
       )    
   }
 }

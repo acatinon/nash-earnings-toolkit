@@ -47,6 +47,16 @@
     @apply border px-1 text-right rounded border-blue-400;
   }
 
+  dl {
+    dt {
+      @apply italic;
+    }
+
+    dd {
+      @apply leading-relaxed text-justify mb-4;
+    }
+  }
+
 }
 
 @layer components {
