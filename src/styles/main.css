@@ -53,7 +53,10 @@
     }
 
     dd {
-      @apply leading-relaxed text-justify mb-4;
+      @apply leading-relaxed text-justify;
+      &:not(:last-child) {
+        @apply mb-4;
+      }
     }
   }
 

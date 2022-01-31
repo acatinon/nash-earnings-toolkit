@@ -46,7 +46,7 @@ export default (props) => {
               <dd>Yes, a smart contract method will be called to trigger the withdrawal, and,
                 as every interaction with the Ethereum blockchain, you need to pay fees.
                 Also, keep in mind that your aTokens will be withdrawn from Aave, and that
-                kind of operations a quite costly.
+                kind of operations are quite costly.
               </dd>
 
               <dt>What is the manual withdrawal fee?</dt>
