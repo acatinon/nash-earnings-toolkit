@@ -1,0 +1,21 @@
+{
+  "name": "tools",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "fetch": "npx ts-node ./fetch-transactions.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.10",
+    "ethers": "^5.4.7",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.0.1",
+    "dotenv": "^10.0.0",
+    "ethereum-input-data-decoder": "^0.4.1",
+    "luxon": "^2.3.1",
+    "node-fetch": "^3.2.3",
+    "ts-node": "^10.4.0"
+  }
+}
