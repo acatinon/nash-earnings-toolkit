@@ -22,12 +22,12 @@ export default (props) => {
         <YAxis ticks={[0, 500_000, 1_000_000, 1_500_000, 2_000_000]} />
         <Tooltip />
         <CartesianGrid />
-        <Bar type="stepAfter" dataKey="aUSDC" stackId="1" fill="#8884d8" />
-        <Bar type="stepAfter" dataKey="aDAI" stackId="1" fill="#ffc658" />
-        <Bar type="stepAfter" dataKey="aUSDT" stackId="1" fill="#82ca9d" />
-        <Bar type="stepAfter" dataKey="aGUSD" stackId="1" fill="#8884d8" />
-        <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#ffc658" />
-        <Bar type="stepAfter" dataKey="aUST" stackId="1" fill="#82ca9d" />
+        <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#3F3F46" />
+        <Bar type="stepAfter" dataKey="aDAI" stackId="1" fill="#F59E0B" />
+        <Bar type="stepAfter" dataKey="aGUSD" stackId="1" fill="#0EA5E9" />
+        <Bar type="stepAfter" dataKey="aUSDC" stackId="1" fill="#2563EB" />
+        <Bar type="stepAfter" dataKey="aUSDT" stackId="1" fill="#10B981" />
+        <Bar type="stepAfter" dataKey="aUST" stackId="1" fill="#6366F1" />
       </BarChart>
     </ResponsiveContainer>
   );
