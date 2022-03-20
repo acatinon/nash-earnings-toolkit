@@ -1,11 +1,12 @@
 import useSWR from 'swr';
 import { DateTime, Interval, Duration } from 'luxon';
-import BigNumber from "bignumber.js";
+import { format } from "d3-format";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 export default (props) => {
-  const fetcher = (input: RequestInfo, init?: RequestInit) => fetch(input, init).then(res => res.json())
-  let { data, error } = useSWR('/data/earning.json', fetcher)
+  const fetcher = (input: RequestInfo, init?: RequestInit) => fetch(input, init).then(res => res.json());
+  let { data, error } = useSWR('/data/earning.json', fetcher);
+  const formatNumber = format(".2s");
 
   if (error) return <div>failed to load</div>
   if (!data) return <div>loading...</div>
@@ -19,7 +20,7 @@ export default (props) => {
         <XAxis dataKey="name" xAxisId={0} hide={true} />
         <XAxis dataKey="month" xAxisId={1} allowDuplicatedCategory={false} tickLine={false} />
         <XAxis dataKey="year" xAxisId={2} allowDuplicatedCategory={false} tickLine={false} />
-        <YAxis ticks={[0, 500_000, 1_000_000, 1_500_000, 2_000_000]} />
+        <YAxis ticks={[0, 500_000, 1_000_000, 1_500_000, 2_000_000]} tickFormatter={(v) => formatNumber(v)} />
         <Tooltip />
         <CartesianGrid />
         <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#3F3F46" />
