@@ -61,7 +61,7 @@ function normalizeData(data) {
     }
 
     element.year = currentDate.year;
-    element.month = currentDate.month;
+    element.month = currentDate.toFormat("LLL");
 
     for (const asset in lastKnownValues) {
       if (element[asset]) {
