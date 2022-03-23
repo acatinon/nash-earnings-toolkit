@@ -10,8 +10,8 @@ import Web3Context from "../contexts/web3-context";
 export default (props) => {
   const { providerState, account, library, setError, activate } = useContext(Web3Context);
   const { isActive, contract, balances, fee, connect } = useContract(providerState, account, library, activate);
-  
-  return  (
+
+  return (
     <>
       <h2>Earning withdrawal tool</h2>
       <div className="grid grid-cols-2 gap-6">
@@ -20,8 +20,8 @@ export default (props) => {
             This tool is not official and is not endorsed by the Nash team. Use at your own risk!
           </WarningMessage>
           <p>As you may know, on the mobile app, the Nash earning product only allow to cash out to fiat.
-          But earning is non-custodial, which means that it's possible to withdraw your stablecoin tokens
-          at any time by interacting directly with the blockchain.</p>
+            But earning is non-custodial, which means that it's possible to withdraw your stablecoin tokens
+            at any time by interacting directly with the blockchain.</p>
           <p>This tool allows you to call a method on the earning smart contract that will withdraw your
             aTokens from Aave and transfer the correponding stablecoins to your wallet.</p>
           <Content
@@ -63,11 +63,11 @@ export default (props) => {
               <dt>Can I download a copy of this tool and store an offline version?</dt>
               <dd>Yes, of course!</dd>
             </dl>
-          </InfoMessage>          
+          </InfoMessage>
         </div>
 
       </div>
-      
+
     </>
   );
 }
@@ -122,15 +122,15 @@ const Content = (props: ContentProps) => {
     props.contract.withdraw(props.balances)
       .then((response) => {
         response.wait()
-        .then((receipt) => {
-          setTransactionHash(receipt.transactionHash);
-          setTransactionState(TransactionState.Success);
-        })
-        .catch((error) => {
-          debugger;
-          props.setError(error);
-          setTransactionState(TransactionState.Error);
-        });
+          .then((receipt) => {
+            setTransactionHash(receipt.transactionHash);
+            setTransactionState(TransactionState.Success);
+          })
+          .catch((error) => {
+            debugger;
+            props.setError(error);
+            setTransactionState(TransactionState.Error);
+          });
       })
       .catch((error) => {
         debugger;
@@ -155,7 +155,7 @@ const Content = (props: ContentProps) => {
         return null;
       }
       return (
-        <table>
+        <table className="assets">
           <thead>
             <tr>
               <th>Assets</th>
@@ -197,6 +197,6 @@ const Content = (props: ContentProps) => {
             </tr>
           </tbody>
         </table>
-      )    
+      )
   }
 }
