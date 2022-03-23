@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import BigNumber from 'bignumber.js';
 import { DateTime, Interval, Duration } from 'luxon';
 import { format } from "d3-format";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
@@ -21,7 +22,7 @@ export default (props) => {
         <XAxis dataKey="month" xAxisId={1} allowDuplicatedCategory={false} tickLine={false} />
         <XAxis dataKey="year" xAxisId={2} allowDuplicatedCategory={false} tickLine={false} />
         <YAxis ticks={[0, 500_000, 1_000_000, 1_500_000, 2_000_000]} tickFormatter={(v) => formatNumber(v)} />
-        <Tooltip />
+        <Tooltip content={customTooltip} />
         <CartesianGrid />
         <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#3F3F46" />
         <Bar type="stepAfter" dataKey="aDAI" stackId="1" fill="#F59E0B" />
@@ -34,6 +35,27 @@ export default (props) => {
   );
 }
 
+const customTooltip = (props) => {
+  if (props.active && props.payload && props.payload.length) {
+    const fullPayload = props.payload[0].payload;
+    const rows = props.payload.map(p => (
+      <tr>
+        <td>{p.name}</td>
+        <td className="text-right">{new BigNumber(p.value).toFormat(2)}</td>
+      </tr>
+    ));
+    return (
+      <div className="bg-white/80 p-1 w-48 rounded shadow">
+        <div><strong>Week {fullPayload.week}</strong> ({fullPayload.month} {fullPayload.year})</div>
+        <table className="w-full">
+          {rows}
+        </table>
+      </div>
+    );
+  }
+
+  return null;
+};
 function normalizeData(data) {
   let lastKnownValues = {
     "aUSDC": 0,
@@ -51,7 +73,12 @@ function normalizeData(data) {
     while (i > 0 && Interval.fromDateTimes(DateTime.fromFormat(data[i - 1].name, "kkkk-WW"), currentDate).length("weeks") > 1) {
 
       currentDate = currentDate.minus(Duration.fromObject({ weeks: 1 }));
-      let newElement = { name: currentDate.toFormat("kkkk-WW"), year: currentDate.year, month: currentDate.month };
+      let newElement = {
+        name: currentDate.toFormat("kkkk-WW"),
+        year: currentDate.year,
+        month: currentDate.toFormat("LLL"),
+        week: currentDate.toFormat("WW")
+      };
 
       for (const asset in lastKnownValues) {
         newElement[asset] = lastKnownValues[asset];
@@ -62,6 +89,7 @@ function normalizeData(data) {
 
     element.year = currentDate.year;
     element.month = currentDate.toFormat("LLL");
+    element.week = currentDate.toFormat("WW");
 
     for (const asset in lastKnownValues) {
       if (element[asset]) {
