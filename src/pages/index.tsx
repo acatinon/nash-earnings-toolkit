@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import BigNumber from 'bignumber.js';
 import { DateTime, Interval, Duration } from 'luxon';
 import { format } from "d3-format";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 const fetcher = (input: RequestInfo, init?: RequestInit) => fetch(input, init).then(res => res.json());
 
@@ -37,6 +37,7 @@ const TotalAssetsChart = (props) => {
         <XAxis dataKey="year" xAxisId={2} allowDuplicatedCategory={false} tickLine={false} />
         <YAxis ticks={[0, 500_000, 1_000_000, 1_500_000, 2_000_000]} tickFormatter={(v) => formatNumber(v)} />
         <Tooltip content={customTooltip} />
+        <Legend layout="vertical" verticalAlign="middle" align="right" wrapperStyle={{ paddingLeft: "10px" }} />
         <CartesianGrid />
         <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#78716C" />
         <Bar type="stepAfter" dataKey="aDAI" stackId="1" fill="#F59E0B" />
