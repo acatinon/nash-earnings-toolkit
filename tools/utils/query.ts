@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { DateTime } from 'luxon';
 
 class ScanApi {
   baseUrl: String;
@@ -39,6 +40,15 @@ class ScanApi {
 
     return fetch(url)
       .then((res) => res.json())
+  }
+}
+
+class CoinGeckoApi {
+  async getPrice(id: String, date: DateTime): Promise<number> {
+    const formattedDate = date.toFormat("dd-LL-yyyy");
+    return fetch(`https://api.coingecko.com/api/v3/coins/${id}/history?date=${formattedDate}`)
+      .then((res) => res.json())
+      .then((json: any) => json.market_data.current_price.usd)
   }
 }
 
