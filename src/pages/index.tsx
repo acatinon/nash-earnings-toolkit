@@ -4,8 +4,22 @@ import { DateTime, Interval, Duration } from 'luxon';
 import { format } from "d3-format";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 
+const fetcher = (input: RequestInfo, init?: RequestInit) => fetch(input, init).then(res => res.json());
+
 export default (props) => {
-  const fetcher = (input: RequestInfo, init?: RequestInit) => fetch(input, init).then(res => res.json());
+  return (
+    <>
+      <h2>Earning total assets</h2>
+      <div className="h-96">
+        <TotalAssetsChart />
+      </div>
+    </>
+
+  );
+}
+
+const TotalAssetsChart = (props) => {
+
   let { data, error } = useSWR('/data/earning.json', fetcher);
   const formatNumber = format(".2s");
 
@@ -24,7 +38,7 @@ export default (props) => {
         <YAxis ticks={[0, 500_000, 1_000_000, 1_500_000, 2_000_000]} tickFormatter={(v) => formatNumber(v)} />
         <Tooltip content={customTooltip} />
         <CartesianGrid />
-        <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#3F3F46" />
+        <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#78716C" />
         <Bar type="stepAfter" dataKey="aDAI" stackId="1" fill="#F59E0B" />
         <Bar type="stepAfter" dataKey="aGUSD" stackId="1" fill="#0EA5E9" />
         <Bar type="stepAfter" dataKey="aUSDC" stackId="1" fill="#2563EB" />
@@ -33,7 +47,7 @@ export default (props) => {
       </BarChart>
     </ResponsiveContainer>
   );
-}
+};
 
 const customTooltip = (props) => {
   if (props.active && props.payload && props.payload.length) {
