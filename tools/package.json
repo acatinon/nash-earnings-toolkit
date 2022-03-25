@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "fetch": "npx ts-node ./fetch-transactions.ts"
+    "fetch": "NODE_OPTIONS='--experimental-json-modules' npx ts-node ./fetch-transactions.ts"
   },
   "devDependencies": {
     "@types/node": "^16.7.10",
@@ -11,8 +11,10 @@
     "typescript": "^4.4.2"
   },
   "dependencies": {
+    "@alch/alchemy-web3": "^1.3.0",
     "bignumber.js": "^9.0.1",
     "dotenv": "^10.0.0",
+    "ethereum-block-by-date": "^1.4.5",
     "ethereum-input-data-decoder": "^0.4.1",
     "luxon": "^2.3.1",
     "node-fetch": "^3.2.3",
