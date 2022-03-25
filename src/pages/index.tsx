@@ -27,7 +27,6 @@ const TotalAssetsChart = (props) => {
   if (!data) return <div>loading...</div>
 
   data = normalizeData(data);
-  console.log(data);
 
   return (
     <ResponsiveContainer>
@@ -72,48 +71,14 @@ const customTooltip = (props) => {
   return null;
 };
 function normalizeData(data) {
-  let lastKnownValues = {
-    "aUSDC": 0,
-    "aDAI": 0,
-    "aUSDT": 0,
-    "aGUSD": 0,
-    "aBUSD": 0,
-    "aUST": 0
-  };
 
   for (let i = 0; i < data.length; i++) {
     let element = data[i];
     let currentDate = DateTime.fromFormat(element.name, "kkkk-WW")
 
-    while (i > 0 && Interval.fromDateTimes(DateTime.fromFormat(data[i - 1].name, "kkkk-WW"), currentDate).length("weeks") > 1) {
-
-      currentDate = currentDate.minus(Duration.fromObject({ weeks: 1 }));
-      let newElement = {
-        name: currentDate.toFormat("kkkk-WW"),
-        year: currentDate.year,
-        month: currentDate.toFormat("LLL"),
-        week: currentDate.toFormat("WW")
-      };
-
-      for (const asset in lastKnownValues) {
-        newElement[asset] = lastKnownValues[asset];
-      }
-
-      data.splice(i, 0, newElement);
-    }
-
     element.year = currentDate.year;
     element.month = currentDate.toFormat("LLL");
     element.week = currentDate.toFormat("WW");
-
-    for (const asset in lastKnownValues) {
-      if (element[asset]) {
-        lastKnownValues[asset] = element[asset];
-      }
-      else {
-        element[asset] = lastKnownValues[asset];
-      }
-    }
   }
 
   return data;
