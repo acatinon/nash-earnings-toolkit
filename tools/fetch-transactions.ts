@@ -4,14 +4,26 @@ import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
 import { DateTime } from "luxon";
 import InputDataDecoder from "ethereum-input-data-decoder";
+import EthDater from "ethereum-block-by-date";
 import { ScanApi } from "./utils/query.js";
 import { saveJson } from "./utils/persistance.js";
+import aUsdcAbi from "./ABIs/aUSDC.json" assert { type: 'json' };
+import aDaiAbi from "./ABIs/aDAI.json" assert { type: 'json' };
+import aUsdtAbi from "./ABIs/aUSDT.json" assert { type: 'json' };
+import aGusdAbi from "./ABIs/aGUSD.json" assert { type: 'json' };
+import aBusdAbi from "./ABIs/aBUSD.json" assert { type: 'json' };
+
 
 const startBlock = "12951552";
 const aaveEarningAddress = "0x774073229cd5839f38f60f2b98be3c99dac9ad21";
 const anchorEarningAddress = "0x70fa3ce2e0c8c20d9f89fe745089149fb3abc623";
 
-let totalAssets = {};
+const aUsdcContractAddress = "0xBcca60bB61934080951369a648Fb03DF4F96263C";
+const aDaiContractAddress = "0x028171bCA77440897B824Ca71D1c56caC55b68A3";
+const aUsdtContractAddress = "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811";
+const aGusdContractAddress = "0xD37EE7e4f452C6638c96536e68090De8cBcdb583";
+const aBusdContractAddress = "0xA361718326c15715591c299427c62086F69923D9";
+let totalAssets = [];
 
 let allocatedAssets = {
   "aUSDC": { "2021-08-03": new BigNumber("0") },
@@ -22,17 +34,74 @@ let allocatedAssets = {
   "aUST": { "2021-08-03": new BigNumber("0") },
 }
 
+const ethereumProvider = new ethers.providers.JsonRpcProvider(process.env.ETHEREUM_PROVIDER);
+
+const aUsdcContract = new ethers.Contract(aUsdcContractAddress, aUsdcAbi, ethereumProvider);
+const aDaiContract = new ethers.Contract(aDaiContractAddress, aDaiAbi, ethereumProvider);
+const aUsdtContract = new ethers.Contract(aUsdtContractAddress, aUsdtAbi, ethereumProvider);
+const aGusdContract = new ethers.Contract(aGusdContractAddress, aGusdAbi, ethereumProvider);
+const aBusdContract = new ethers.Contract(aBusdContractAddress, aBusdAbi, ethereumProvider);
+
 const etherscanApi = new ScanApi("https://api.etherscan.io/api", process.env.ETHERSCAN_API_KEY);
 const polygonscanApi = new ScanApi("https://api.polygonscan.com/api", process.env.POLYGONSCAN_API_KEY);
+const dater = new EthDater(ethereumProvider);
 
-function update(dict, timeStamp, symbol, value) {
-  let date = DateTime.fromSeconds(timeStamp).toFormat("yyyy-WW");
-  let assets = dict[date] || {};
-  let v = assets[symbol] || new BigNumber(0);
-  v = v.plus(value);
-  assets[symbol] = v;
 
-  dict[date] = assets;
+let blocksEveryWeeks = await dater.getEvery(
+  'weeks', // Period, required. Valid value: years, quarters, months, weeks, days, hours, minutes
+  '2021-08-02T00:00:00Z', // Start date, required. Any valid moment.js value: string, milliseconds, Date() object, moment() object.
+  DateTime.now().toISO()  // End date, required. Any valid moment.js value: string, milliseconds, Date() object, moment() object.
+);
+
+
+for (const b of blocksEveryWeeks) {
+  let date = DateTime.fromSeconds(b.timestamp).toFormat("yyyy-WW");
+
+  const assets = { name: date };
+
+  await Promise.all(
+    [
+      update(
+        assets,
+        "aUSDC",
+        aUsdcContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
+        6
+      ),
+      update(
+        assets,
+        "aDAI",
+        aDaiContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
+        18
+      ),
+      update(
+        assets,
+        "aUSDT",
+        aUsdtContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
+        6
+      ),
+      update(
+        assets,
+        "aGUSD",
+        aGusdContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
+        2
+      ),
+      update(
+        assets,
+        "aBUSD",
+        aBusdContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
+        18
+      )
+    ]
+  );
+
+  totalAssets.push(assets);
+}
+
+await saveJson(totalAssets, "../public/data/earning.json")
+
+async function update(dict, symbol, value, decimals) {
+  value = (await value).toString();
+  dict[symbol] = new BigNumber(value).dividedBy(new BigNumber(10).pow(decimals)).toNumber();
 }
 
 function prepareSerialization(assets) {
@@ -68,18 +137,19 @@ function getTransfersFunction(earningAddress: string) {
         if (transaction.from == earningAddress) {
           value = value.multipliedBy(-1);
         }
-        update(totalAssets, timeStamp, transaction.tokenSymbol, value);
+        //update(totalAssets, timeStamp, transaction.tokenSymbol, value);
       }
     }
   };
 }
 
+/*
 await etherscanApi.transfers(aaveEarningAddress).then(getTransfersFunction(aaveEarningAddress));
 await polygonscanApi.transfers(anchorEarningAddress).then(getTransfersFunction(anchorEarningAddress));
 await saveJson(prepareSerialization(totalAssets), "../public/data/earning.json")
 
 const decoder = new InputDataDecoder("./abi.json");
-
+*/
 /*
 polygonscanApi.contractEvents(anchorEarningAddress).then((json: any) => {
 
