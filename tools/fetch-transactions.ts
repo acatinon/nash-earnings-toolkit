@@ -46,18 +46,19 @@ const etherscanApi = new ScanApi("https://api.etherscan.io/api", process.env.ETH
 const polygonscanApi = new ScanApi("https://api.polygonscan.com/api", process.env.POLYGONSCAN_API_KEY);
 const dater = new EthDater(ethereumProvider);
 
-
 let blocksEveryWeeks = await dater.getEvery(
-  'weeks', // Period, required. Valid value: years, quarters, months, weeks, days, hours, minutes
-  '2021-08-02T00:00:00Z', // Start date, required. Any valid moment.js value: string, milliseconds, Date() object, moment() object.
-  DateTime.now().toISO()  // End date, required. Any valid moment.js value: string, milliseconds, Date() object, moment() object.
+  'weeks',
+  '2021-08-09T00:00:00Z',
+  DateTime.now().toISO(),
+  1,
+  false
 );
 
-
 for (const b of blocksEveryWeeks) {
-  let date = DateTime.fromSeconds(b.timestamp).toFormat("yyyy-WW");
+  let date = DateTime.fromSeconds(b.timestamp);
+  let week = date.toFormat("yyyy-WW");
 
-  const assets = { name: date };
+  const assets = { name: week };
 
   await Promise.all(
     [
