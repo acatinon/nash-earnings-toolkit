@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js";
 import { DateTime } from "luxon";
 import InputDataDecoder from "ethereum-input-data-decoder";
 import EthDater from "ethereum-block-by-date";
-import { ScanApi } from "./utils/query.js";
+import { ScanApi, getPrice } from "./utils/query.js";
 import { saveJson } from "./utils/persistance.js";
 import aUsdcAbi from "./ABIs/aUSDC.json" assert { type: 'json' };
 import aDaiAbi from "./ABIs/aDAI.json" assert { type: 'json' };
@@ -63,44 +63,32 @@ for (const b of blocksEveryWeeks) {
   let date = DateTime.fromSeconds(b.timestamp);
   let week = date.toFormat("yyyy-WW");
 
-  const assets = { name: week };
-
-  await Promise.all(
+  const values = await Promise.all(
     [
-      update(
-        assets,
-        "aUSDC",
-        aUsdcContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
-        6
-      ),
-      update(
-        assets,
-        "aDAI",
-        aDaiContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
-        18
-      ),
-      update(
-        assets,
-        "aUSDT",
-        aUsdtContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
-        6
-      ),
-      update(
-        assets,
-        "aGUSD",
-        aGusdContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
-        2
-      ),
-      update(
-        assets,
-        "aBUSD",
-        aBusdContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
-        18
-      )
+      aUsdcContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
+      aDaiContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
+      aUsdtContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
+      aGusdContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
+      aBusdContract.balanceOf(aaveEarningAddress, { blockTag: b.block })
     ]
-  );
+  ).then(values => {
+    return [
+      new BigNumber(values[0].toString()).dividedBy(new BigNumber(10).pow(6)).toNumber(),
+      new BigNumber(values[1].toString()).dividedBy(new BigNumber(10).pow(18)).toNumber(),
+      new BigNumber(values[2].toString()).dividedBy(new BigNumber(10).pow(6)).toNumber(),
+      new BigNumber(values[3].toString()).dividedBy(new BigNumber(10).pow(2)).toNumber(),
+      new BigNumber(values[4].toString()).dividedBy(new BigNumber(10).pow(18)).toNumber(),
+    ]
+  })
 
-  totalAssets.push(assets);
+  totalAssets.push({
+    name: week,
+    "aUSDC": values[0],
+    "aDAI": values[1],
+    "aUSDT": values[2],
+    "aGUSD": values[3],
+    "aBUSD": values[4],
+  });
 }
 
 let blocksEveryWeeksPolygon = await polygonDater.getEvery(
@@ -116,21 +104,15 @@ for (const b of blocksEveryWeeksPolygon) {
   let week = date.toFormat("yyyy-WW");
 
   const assets = totalAssets.find(x => x.name == week);
+  const balance = await aUstContract.balanceOf(anchorEarningAddress, { blockTag: b.block }).then(value => {
+    return new BigNumber(value.toString()).dividedBy(new BigNumber(10).pow(18)).toNumber();
+  });
+  const price = await getPrice("anchorust", date);
 
-  await update(
-    assets,
-    "aUST",
-    aUstContract.balanceOf(anchorEarningAddress, { blockTag: b.block }),
-    18
-  )
+  assets["aUST"] = balance * price;
 }
 
 await saveJson(totalAssets, "../public/data/earning.json")
-
-async function update(dict, symbol, value, decimals) {
-  value = (await value).toString();
-  dict[symbol] = new BigNumber(value).dividedBy(new BigNumber(10).pow(decimals)).toNumber();
-}
 
 function prepareSerialization(assets) {
   let sums = {

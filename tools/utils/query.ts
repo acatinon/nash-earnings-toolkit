@@ -43,13 +43,12 @@ class ScanApi {
   }
 }
 
-class CoinGeckoApi {
-  async getPrice(id: String, date: DateTime): Promise<number> {
-    const formattedDate = date.toFormat("dd-LL-yyyy");
-    return fetch(`https://api.coingecko.com/api/v3/coins/${id}/history?date=${formattedDate}`)
-      .then((res) => res.json())
-      .then((json: any) => json.market_data.current_price.usd)
-  }
+
+async function getPrice(id: String, date: DateTime): Promise<number> {
+  const formattedDate = date.toFormat("dd-LL-yyyy");
+  return fetch(`https://api.coingecko.com/api/v3/coins/${id}/history?date=${formattedDate}`)
+    .then((res) => res.json())
+    .then((json: any) => json.market_data.current_price.usd)
 }
 
-export { ScanApi }
+export { ScanApi, getPrice }
