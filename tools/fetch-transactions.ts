@@ -23,6 +23,7 @@ const aDaiContractAddress = "0x028171bCA77440897B824Ca71D1c56caC55b68A3";
 const aUsdtContractAddress = "0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811";
 const aGusdContractAddress = "0xD37EE7e4f452C6638c96536e68090De8cBcdb583";
 const aBusdContractAddress = "0xA361718326c15715591c299427c62086F69923D9";
+const aUstContractAddress = "0x522a3Bd54d5D6a9CC67592e31Cc1A745630daF50";
 let totalAssets = [];
 
 let allocatedAssets = {
@@ -34,19 +35,23 @@ let allocatedAssets = {
   "aUST": { "2021-08-03": new BigNumber("0") },
 }
 
-const ethereumProvider = new ethers.providers.JsonRpcProvider(process.env.ETHEREUM_PROVIDER);
+const ethereumProvider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_ETHEREUM_PROVIDER);
+const polygonProvider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_POLYGON_PROVIDER);
 
 const aUsdcContract = new ethers.Contract(aUsdcContractAddress, aUsdcAbi, ethereumProvider);
 const aDaiContract = new ethers.Contract(aDaiContractAddress, aDaiAbi, ethereumProvider);
 const aUsdtContract = new ethers.Contract(aUsdtContractAddress, aUsdtAbi, ethereumProvider);
 const aGusdContract = new ethers.Contract(aGusdContractAddress, aGusdAbi, ethereumProvider);
 const aBusdContract = new ethers.Contract(aBusdContractAddress, aBusdAbi, ethereumProvider);
+const aUstContract = new ethers.Contract(aUstContractAddress, aBusdAbi, polygonProvider);
 
 const etherscanApi = new ScanApi("https://api.etherscan.io/api", process.env.ETHERSCAN_API_KEY);
 const polygonscanApi = new ScanApi("https://api.polygonscan.com/api", process.env.POLYGONSCAN_API_KEY);
-const dater = new EthDater(ethereumProvider);
+const ethereumDater = new EthDater(ethereumProvider);
+const polygonDater = new EthDater(polygonProvider);
+const startAnchor = DateTime.fromISO('');
 
-let blocksEveryWeeks = await dater.getEvery(
+let blocksEveryWeeks = await ethereumDater.getEvery(
   'weeks',
   '2021-08-09T00:00:00Z',
   DateTime.now().toISO(),
@@ -96,6 +101,28 @@ for (const b of blocksEveryWeeks) {
   );
 
   totalAssets.push(assets);
+}
+
+let blocksEveryWeeksPolygon = await polygonDater.getEvery(
+  'weeks',
+  '2022-03-14T00:00:00Z',
+  DateTime.now().toISO(),
+  1,
+  false
+);
+
+for (const b of blocksEveryWeeksPolygon) {
+  let date = DateTime.fromSeconds(b.timestamp);
+  let week = date.toFormat("yyyy-WW");
+
+  const assets = totalAssets.find(x => x.name == week);
+
+  await update(
+    assets,
+    "aUST",
+    aUstContract.balanceOf(anchorEarningAddress, { blockTag: b.block }),
+    18
+  )
 }
 
 await saveJson(totalAssets, "../public/data/earning.json")
