@@ -40,10 +40,10 @@ const TotalAssetsChart = (props) => {
         <CartesianGrid />
         <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#78716C" />
         <Bar type="stepAfter" dataKey="aDAI" stackId="1" fill="#F59E0B" />
-        <Bar type="stepAfter" dataKey="aGUSD" stackId="1" fill="#0EA5E9" />
-        <Bar type="stepAfter" dataKey="aUSDC" stackId="1" fill="#2563EB" />
-        <Bar type="stepAfter" dataKey="aUSDT" stackId="1" fill="#10B981" />
-        <Bar type="stepAfter" dataKey="aUST" stackId="1" fill="#6366F1" />
+        <Bar type="stepAfter" dataKey="aUSDT" stackId="1" fill="#34D399" />
+        <Bar type="stepAfter" dataKey="aGUSD" stackId="1" fill="#38BDF8" />
+        <Bar type="stepAfter" dataKey="aUSDC" stackId="1" fill="#3B82F6" />
+        <Bar type="stepAfter" dataKey="aUST" stackId="1" fill="#818CF8" />
       </BarChart>
     </ResponsiveContainer>
   );
