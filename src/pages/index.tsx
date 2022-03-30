@@ -52,6 +52,10 @@ const TotalAssetsChart = (props) => {
 const customTooltip = (props) => {
   if (props.active && props.payload && props.payload.length) {
     const fullPayload = props.payload[0].payload;
+    const total = props.payload.reduce(
+      (previousValue, payload) => previousValue.plus(new BigNumber(payload.value)),
+      new BigNumber(0)
+    );
     const rows = props.payload.map(p => (
       <tr>
         <td>{p.name}</td>
@@ -62,7 +66,13 @@ const customTooltip = (props) => {
       <div className="bg-white/80 p-1 w-48 rounded shadow">
         <div><strong>Week {fullPayload.week}</strong> ({fullPayload.month} {fullPayload.year})</div>
         <table className="w-full">
-          {rows}
+          <tbody>
+            {rows}
+            <tr>
+              <td className="font-bold">Total</td>
+              <td className="text-right font-bold">{total.toFormat(2)}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     );
