@@ -12,6 +12,7 @@ import aDaiAbi from "./ABIs/aDAI.json" assert { type: 'json' };
 import aUsdtAbi from "./ABIs/aUSDT.json" assert { type: 'json' };
 import aGusdAbi from "./ABIs/aGUSD.json" assert { type: 'json' };
 import aBusdAbi from "./ABIs/aBUSD.json" assert { type: 'json' };
+import aUstAbi from "./ABIs/aUST.json" assert { type: 'json' };
 
 
 const startBlock = "12951552";
@@ -43,7 +44,7 @@ const aDaiContract = new ethers.Contract(aDaiContractAddress, aDaiAbi, ethereumP
 const aUsdtContract = new ethers.Contract(aUsdtContractAddress, aUsdtAbi, ethereumProvider);
 const aGusdContract = new ethers.Contract(aGusdContractAddress, aGusdAbi, ethereumProvider);
 const aBusdContract = new ethers.Contract(aBusdContractAddress, aBusdAbi, ethereumProvider);
-const aUstContract = new ethers.Contract(aUstContractAddress, aBusdAbi, polygonProvider);
+const aUstContract = new ethers.Contract(aUstContractAddress, aUstAbi, polygonProvider);
 
 const etherscanApi = new ScanApi("https://api.etherscan.io/api", process.env.ETHERSCAN_API_KEY);
 const polygonscanApi = new ScanApi("https://api.polygonscan.com/api", process.env.POLYGONSCAN_API_KEY);
