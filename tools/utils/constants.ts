@@ -6,3 +6,6 @@ export const ContractAddresses = {
     aBusd: "0xA361718326c15715591c299427c62086F69923D9",
     aUst: "0x522a3Bd54d5D6a9CC67592e31Cc1A745630daF50"
 }
+
+export const AaveEarningAddress = "0x774073229cd5839f38f60f2b98be3c99dac9ad21";
+export const AnchorEarningAddress = "0x70fa3ce2e0c8c20d9f89fe745089149fb3abc623";

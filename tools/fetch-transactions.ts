@@ -7,7 +7,7 @@ import InputDataDecoder from "ethereum-input-data-decoder";
 import EthDater from "ethereum-block-by-date";
 import { ScanApi, getPrice } from "./utils/query.js";
 import { saveJson } from "./utils/persistance.js";
-import { ContractAddresses } from "./utils/constants";
+import { ContractAddresses, AaveEarningAddress, AnchorEarningAddress } from "./utils/constants";
 import aUsdcAbi from "./ABIs/aUSDC.json" assert { type: 'json' };
 import aDaiAbi from "./ABIs/aDAI.json" assert { type: 'json' };
 import aUsdtAbi from "./ABIs/aUSDT.json" assert { type: 'json' };
@@ -17,8 +17,6 @@ import aUstAbi from "./ABIs/aUST.json" assert { type: 'json' };
 
 
 const startBlock = "12951552";
-const aaveEarningAddress = "0x774073229cd5839f38f60f2b98be3c99dac9ad21";
-const anchorEarningAddress = "0x70fa3ce2e0c8c20d9f89fe745089149fb3abc623";
 
 let totalAssets = [];
 
@@ -61,11 +59,11 @@ for (const b of blocksEveryWeeks) {
 
   const values = await Promise.all(
     [
-      aUsdcContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
-      aDaiContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
-      aUsdtContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
-      aGusdContract.balanceOf(aaveEarningAddress, { blockTag: b.block }),
-      aBusdContract.balanceOf(aaveEarningAddress, { blockTag: b.block })
+      aUsdcContract.balanceOf(AaveEarningAddress, { blockTag: b.block }),
+      aDaiContract.balanceOf(AaveEarningAddress, { blockTag: b.block }),
+      aUsdtContract.balanceOf(AaveEarningAddress, { blockTag: b.block }),
+      aGusdContract.balanceOf(AaveEarningAddress, { blockTag: b.block }),
+      aBusdContract.balanceOf(AaveEarningAddress, { blockTag: b.block })
     ]
   ).then(values => {
     return [
@@ -100,7 +98,7 @@ for (const b of blocksEveryWeeksPolygon) {
   let week = date.toFormat("yyyy-WW");
 
   const assets = totalAssets.find(x => x.name == week);
-  const balance = await aUstContract.balanceOf(anchorEarningAddress, { blockTag: b.block }).then(value => {
+  const balance = await aUstContract.balanceOf(AnchorEarningAddress, { blockTag: b.block }).then(value => {
     return new BigNumber(value.toString()).dividedBy(new BigNumber(10).pow(18)).toNumber();
   });
   const price = await getPrice("anchorust", date);
