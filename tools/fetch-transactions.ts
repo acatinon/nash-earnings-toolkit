@@ -6,14 +6,10 @@ import { DateTime } from "luxon";
 import InputDataDecoder from "ethereum-input-data-decoder";
 import EthDater from "ethereum-block-by-date";
 import { ScanApi, getPrice } from "./utils/query.js";
+import { getContract } from "./utils/contracts.js";
 import { saveJson } from "./utils/persistance.js";
-import { ContractAddresses, AaveEarningAddress, AnchorEarningAddress } from "./utils/constants";
-import aUsdcAbi from "./ABIs/aUSDC.json" assert { type: 'json' };
-import aDaiAbi from "./ABIs/aDAI.json" assert { type: 'json' };
-import aUsdtAbi from "./ABIs/aUSDT.json" assert { type: 'json' };
-import aGusdAbi from "./ABIs/aGUSD.json" assert { type: 'json' };
-import aBusdAbi from "./ABIs/aBUSD.json" assert { type: 'json' };
-import aUstAbi from "./ABIs/aUST.json" assert { type: 'json' };
+import { AaveEarningAddress, AnchorEarningAddress } from "./utils/constants.js";
+
 
 
 const startBlock = "12951552";
@@ -32,12 +28,12 @@ let allocatedAssets = {
 const ethereumProvider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_ETHEREUM_PROVIDER);
 const polygonProvider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_POLYGON_PROVIDER);
 
-const aUsdcContract = new ethers.Contract(ContractAddresses.aUsdc, aUsdcAbi, ethereumProvider);
-const aDaiContract = new ethers.Contract(ContractAddresses.aDai, aDaiAbi, ethereumProvider);
-const aUsdtContract = new ethers.Contract(ContractAddresses.aUsdt, aUsdtAbi, ethereumProvider);
-const aGusdContract = new ethers.Contract(ContractAddresses.aGusd, aGusdAbi, ethereumProvider);
-const aBusdContract = new ethers.Contract(ContractAddresses.aBusd, aBusdAbi, ethereumProvider);
-const aUstContract = new ethers.Contract(ContractAddresses.aUst, aUstAbi, polygonProvider);
+const aUsdcContract = getContract("aUSDC", ethereumProvider);
+const aDaiContract = getContract("aDAI", ethereumProvider);
+const aUsdtContract = getContract("aUSDT", ethereumProvider);
+const aGusdContract = getContract("aGUSD", ethereumProvider);
+const aBusdContract = getContract("aBUSD", ethereumProvider);
+const aUstContract = getContract("aUST", polygonProvider);
 
 const etherscanApi = new ScanApi("https://api.etherscan.io/api", process.env.ETHERSCAN_API_KEY);
 const polygonscanApi = new ScanApi("https://api.polygonscan.com/api", process.env.POLYGONSCAN_API_KEY);
