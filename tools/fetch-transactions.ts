@@ -51,7 +51,7 @@ let blocksEveryWeeks = await ethereumDater.getEvery(
 
 for (const b of blocksEveryWeeks) {
   let date = DateTime.fromSeconds(b.timestamp);
-  let week = date.toFormat("yyyy-WW");
+  let week = date.toFormat("kkkk-WW");
 
   const values = await Promise.all(
     [
@@ -91,7 +91,7 @@ let blocksEveryWeeksPolygon = await polygonDater.getEvery(
 
 for (const b of blocksEveryWeeksPolygon) {
   let date = DateTime.fromSeconds(b.timestamp);
-  let week = date.toFormat("yyyy-WW");
+  let week = date.toFormat("kkkk-WW");
 
   const assets = totalAssets.find(x => x.name == week);
   const balance = await aUstContract.balanceOf(AnchorEarningAddress, { blockTag: b.block }).then(value => {
