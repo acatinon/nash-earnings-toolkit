@@ -24,22 +24,24 @@ class ScanApi {
 
     return fetch(url)
       .then((res) => res.json())
+      .then((response: any) => response.result);
   }
 
-  async contractEvents(address: String): Promise<any> {
+  async transactions(address: String): Promise<any> {
     let url = this.baseUrl +
       "?module=account" +
       "&action=txlist" +
       "&address=" + address +
-      "&startblock=" + 12951552 +
-      "&endblock=99999999" +
       "&page=1" +
       "&offset=1000" +
+      "&startblock=0" +
+      "&endblock=99999999" +
       "&sort=asc" +
       "&apikey=" + this.apiKey;
 
     return fetch(url)
       .then((res) => res.json())
+      .then((response: any) => response.result);
   }
 }
 
