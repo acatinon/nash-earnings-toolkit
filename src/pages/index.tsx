@@ -9,9 +9,13 @@ const fetcher = (input: RequestInfo, init?: RequestInit) => fetch(input, init).t
 export default (props) => {
   return (
     <>
-      <h2>Earning total assets</h2>
+      <h2>Total assets</h2>
       <div className="h-96">
         <TotalAssetsChart />
+      </div>
+      <h2>Allocated assets</h2>
+      <div className="h-96">
+        <AllocatedAssetsChart />
       </div>
     </>
 
@@ -21,6 +25,37 @@ export default (props) => {
 const TotalAssetsChart = (props) => {
 
   let { data, error } = useSWR('/data/earning.json', fetcher);
+  const formatNumber = format(".2s");
+
+  if (error) return <div>failed to load</div>
+  if (!data) return <div>loading...</div>
+
+  data = normalizeData(data);
+
+  return (
+    <ResponsiveContainer>
+      <BarChart data={data}>
+        <XAxis dataKey="name" xAxisId={0} hide={true} />
+        <XAxis dataKey="month" xAxisId={1} allowDuplicatedCategory={false} tickLine={false} />
+        <XAxis dataKey="year" xAxisId={2} allowDuplicatedCategory={false} tickLine={false} />
+        <YAxis ticks={[0, 500_000, 1_000_000, 1_500_000, 2_000_000]} tickFormatter={(v) => formatNumber(v)} />
+        <Tooltip content={customTooltip} />
+        <Legend layout="vertical" verticalAlign="middle" align="right" wrapperStyle={{ paddingLeft: "10px" }} />
+        <CartesianGrid />
+        <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#78716C" />
+        <Bar type="stepAfter" dataKey="aDAI" stackId="1" fill="#F59E0B" />
+        <Bar type="stepAfter" dataKey="aUSDT" stackId="1" fill="#34D399" />
+        <Bar type="stepAfter" dataKey="aGUSD" stackId="1" fill="#38BDF8" />
+        <Bar type="stepAfter" dataKey="aUSDC" stackId="1" fill="#3B82F6" />
+        <Bar type="stepAfter" dataKey="aUST" stackId="1" fill="#818CF8" />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+};
+
+const AllocatedAssetsChart = (props) => {
+
+  let { data, error } = useSWR('/data/allocated.json', fetcher);
   const formatNumber = format(".2s");
 
   if (error) return <div>failed to load</div>
@@ -80,6 +115,7 @@ const customTooltip = (props) => {
 
   return null;
 };
+
 function normalizeData(data) {
 
   for (let i = 0; i < data.length; i++) {
