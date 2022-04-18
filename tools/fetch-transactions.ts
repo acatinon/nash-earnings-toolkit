@@ -3,10 +3,9 @@ import "dotenv/config";
 import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
 import { DateTime } from "luxon";
-import InputDataDecoder from "ethereum-input-data-decoder";
 import EthDater from "ethereum-block-by-date";
 import { ScanApi, getPrice } from "./utils/query.js";
-import { getContract } from "./utils/contracts.js";
+import { getContractFromToken } from "./utils/contracts.js";
 import { saveJson } from "./utils/persistance.js";
 import { AaveEarningAddress, AnchorEarningAddress } from "./utils/constants.js";
 
@@ -28,12 +27,12 @@ let allocatedAssets = {
 const ethereumProvider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_ETHEREUM_PROVIDER);
 const polygonProvider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_POLYGON_PROVIDER);
 
-const aUsdcContract = getContract("aUSDC", ethereumProvider);
-const aDaiContract = getContract("aDAI", ethereumProvider);
-const aUsdtContract = getContract("aUSDT", ethereumProvider);
-const aGusdContract = getContract("aGUSD", ethereumProvider);
-const aBusdContract = getContract("aBUSD", ethereumProvider);
-const aUstContract = getContract("aUST", polygonProvider);
+const aUsdcContract = getContractFromToken("aUSDC", ethereumProvider);
+const aDaiContract = getContractFromToken("aDAI", ethereumProvider);
+const aUsdtContract = getContractFromToken("aUSDT", ethereumProvider);
+const aGusdContract = getContractFromToken("aGUSD", ethereumProvider);
+const aBusdContract = getContractFromToken("aBUSD", ethereumProvider);
+const aUstContract = getContractFromToken("aUST", polygonProvider);
 
 const etherscanApi = new ScanApi("https://api.etherscan.io/api", process.env.ETHERSCAN_API_KEY);
 const polygonscanApi = new ScanApi("https://api.polygonscan.com/api", process.env.POLYGONSCAN_API_KEY);
