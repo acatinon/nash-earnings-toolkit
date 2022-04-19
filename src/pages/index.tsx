@@ -9,11 +9,11 @@ const fetcher = (input: RequestInfo, init?: RequestInit) => fetch(input, init).t
 export default (props) => {
   return (
     <>
-      <h2>Total assets</h2>
+      <h2>Total assets (by weeks)</h2>
       <div className="h-96">
         <TotalAssetsChart />
       </div>
-      <h2>Allocated assets</h2>
+      <h2>Allocated assets (by weeks)</h2>
       <div className="h-96">
         <AllocatedAssetsChart />
       </div>
@@ -42,12 +42,12 @@ const TotalAssetsChart = (props) => {
         <Tooltip content={customTooltip} />
         <Legend layout="vertical" verticalAlign="middle" align="right" wrapperStyle={{ paddingLeft: "10px" }} />
         <CartesianGrid />
-        <Bar type="stepAfter" dataKey="aBUSD" stackId="1" fill="#78716C" />
-        <Bar type="stepAfter" dataKey="aDAI" stackId="1" fill="#F59E0B" />
-        <Bar type="stepAfter" dataKey="aUSDT" stackId="1" fill="#34D399" />
-        <Bar type="stepAfter" dataKey="aGUSD" stackId="1" fill="#38BDF8" />
-        <Bar type="stepAfter" dataKey="aUSDC" stackId="1" fill="#3B82F6" />
-        <Bar type="stepAfter" dataKey="aUST" stackId="1" fill="#818CF8" />
+        <Bar dataKey="aBUSD" stackId="1" fill="#78716C" />
+        <Bar dataKey="aDAI" stackId="1" fill="#F59E0B" />
+        <Bar dataKey="aUSDT" stackId="1" fill="#34D399" />
+        <Bar dataKey="aGUSD" stackId="1" fill="#38BDF8" />
+        <Bar dataKey="aUSDC" stackId="1" fill="#3B82F6" />
+        <Bar dataKey="aUST" stackId="1" fill="#818CF8" />
       </BarChart>
     </ResponsiveContainer>
   );
