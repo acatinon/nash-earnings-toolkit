@@ -101,7 +101,7 @@ for (const b of blocksEveryWeeksPolygon) {
   assets["aUST"] = balance * price;
 }
 
-await saveJson(totalAssets, "../public/data/earning.json")
+await saveJson(totalAssets, "../public/data/total.json")
 
 function prepareSerialization(assets) {
   let sums = {

@@ -24,7 +24,7 @@ export default (props) => {
 
 const TotalAssetsChart = (props) => {
 
-  let { data, error } = useSWR('/data/earning.json', fetcher);
+  let { data, error } = useSWR('/data/total.json', fetcher);
   const formatNumber = format(".2s");
 
   if (error) return <div>failed to load</div>

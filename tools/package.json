@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "fetch": "NODE_OPTIONS='--experimental-json-modules' npx ts-node ./fetch-transactions.ts",
+    "total": "NODE_OPTIONS='--experimental-json-modules' npx ts-node ./fetch-total.ts",
     "allocated": "NODE_OPTIONS='--experimental-json-modules' npx ts-node ./fetch-allocated.ts"
   },
   "devDependencies": {
