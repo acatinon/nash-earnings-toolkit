@@ -17,6 +17,10 @@ export default (props) => {
       <div className="h-96">
         <AllocatedAssetsChart />
       </div>
+      <h2>Usage (by weeks)</h2>
+      <div className="h-96">
+        <UsageChart />
+      </div>
     </>
 
   );
@@ -83,6 +87,31 @@ const AllocatedAssetsChart = (props) => {
     </ResponsiveContainer>
   );
 };
+
+const UsageChart = (props) => {
+  let { data, error } = useSWR('/data/usage.json', fetcher);
+
+  if (error) return <div>failed to load</div>
+  if (!data) return <div>loading...</div>
+
+  data = normalizeData(data);
+
+  return (
+    <ResponsiveContainer>
+      <BarChart data={data} stackOffset="sign">
+        <XAxis dataKey="name" xAxisId={0} hide={true} />
+        <XAxis dataKey="month" xAxisId={1} allowDuplicatedCategory={false} tickLine={false} />
+        <XAxis dataKey="year" xAxisId={2} allowDuplicatedCategory={false} tickLine={false} />
+        <YAxis />
+        <Tooltip />
+        <Legend layout="vertical" verticalAlign="middle" align="right" wrapperStyle={{ paddingLeft: "10px" }} />
+        <CartesianGrid />
+        <Bar dataKey="deposit" stackId="1" fill="#4ADE80" />
+        <Bar dataKey="withdraw" stackId="1" fill="#F87171" />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
 
 const customTooltip = (props) => {
   if (props.active && props.payload && props.payload.length) {

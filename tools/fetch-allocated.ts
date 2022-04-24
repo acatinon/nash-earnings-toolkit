@@ -19,8 +19,14 @@ const aaveEarningContract = getAaveEarningContract(ethereumProvider);
 const transactions = await etherscanApi.transactions(AaveEarningAddress);
 
 let allocatedAssets = [];
+let usage = [];
 const addressesByWeeks = {};
 let allAddresses = {};
+
+enum Action {
+  Add,
+  Remove
+}
 
 
 for (const t of transactions) {
@@ -33,7 +39,11 @@ for (const t of transactions) {
 
   if (decoded.method == "updateBalances") {
     for (const balanceUpdate of decoded.inputs[0]) {
-      addressesByWeeks[week][balanceUpdate[4]] = true;
+      const sum = balanceUpdate[0].reduce((previousValue, currentValue) => {
+        return previousValue.plus(new BigNumber(currentValue.toString()));
+      },
+        new BigNumber(0))
+      addressesByWeeks[week][balanceUpdate[4]] = sum.isPositive() ? Action.Add : Action.Remove;
     }
   }
 }
@@ -83,8 +93,28 @@ for (const b of blocksEveryWeeks) {
   allocatedAssets.push({ ...assets, ...allBalanceSums })
 }
 
-await saveJson(allocatedAssets, "../public/data/allocated.json")
+await saveJson(allocatedAssets, "../public/data/allocated.json");
 
+for (const date in addressesByWeeks) {
+  let action = {
+    name: date,
+    deposit: 0,
+    withdraw: 0
+  }
+
+  for (const address in addressesByWeeks[date]) {
+    if (addressesByWeeks[date][address] == Action.Add) {
+      action.deposit++;
+    }
+    else {
+      action.withdraw--;
+    }
+  }
+
+  usage.push(action);
+}
+
+await saveJson(usage, "../public/data/usage.json");
 
 async function balanceOf(address, blockNumber) {
   const balances = await aaveEarningContract.balanceOf(address, { blockTag: blockNumber });
