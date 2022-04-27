@@ -25,3 +25,4 @@ export const ABIs = {
 
 export const AaveEarningAddress = "0x774073229cd5839f38f60f2b98be3c99dac9ad21";
 export const AnchorEarningAddress = "0x70fa3ce2e0c8c20d9f89fe745089149fb3abc623";
+export const EthereumSwapFeesAddress = "0x6E86f9084f7348071b4105Da13e9967617BC65aD";
